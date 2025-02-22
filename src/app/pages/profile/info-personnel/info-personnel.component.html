@@ -1,0 +1,74 @@
+<div class="profile-main">
+    <h2>Modifier votre profil</h2>
+    <form class="profile-form">
+      <!-- Nom et prénom -->
+      <div class="form-group">
+        <label>Nom et prénom :</label>
+        <div class="input-group input-group-inside">
+          <span class="input-group-text"><i class="bi bi-person"></i></span>
+          <input type="text" class="form-control" [(ngModel)]="user.nom">
+        </div>
+      </div>
+
+      <!-- Région -->
+      <div class="form-group">
+        <label>Région :</label>
+        <div class="input-group input-group-inside">
+          <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+          <select class="form-control" [(ngModel)]="user.region">
+            <option value="tunis">Tunis</option>
+            <option value="nabeul">Nabeul</option>
+            <option value="sousse">Sousse</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Adresse -->
+      <div class="form-group">
+        <label>Adresse :</label>
+        <div class="input-group input-group-inside">
+          <span class="input-group-text"><i class="bi bi-house-door"></i></span>
+          <input type="text" class="form-control" [(ngModel)]="user.adresse">
+        </div>
+      </div>
+
+      <!-- Téléphone -->
+      <div class="form-group">
+        <label>Tél :</label>
+        <div class="input-group input-group-inside">
+          <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+          <input type="text" class="form-control" [(ngModel)]="user.telephone">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label>Email :</label>
+        <div class="input-group input-group-inside">
+          <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+          <input type="email" class="form-control" [(ngModel)]="user.email" disabled>
+        </div>
+      </div>
+
+      <!-- Nouveau mot de passe -->
+      <div class="form-group">
+        <label>Nouveau mot de passe :</label>
+        <div class="input-group input-group-inside">
+          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+          <input type="password" class="form-control">
+        </div>
+      </div>
+
+      <!-- Confirmation mot de passe -->
+      <div class="form-group">
+        <label>Confirmation mot de passe :</label>
+        <div class="input-group input-group-inside">
+          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+          <input type="password" class="form-control">
+        </div>
+      </div>
+
+      <!-- Bouton Enregistrer -->
+      <button type="submit" class="btn btn-primary w-100">Enregistrer les modifications</button>
+    </form>
+  </div>

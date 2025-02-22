@@ -1,0 +1,153 @@
+<app-navbar></app-navbar>
+<div class="ajouter-bien-container">
+    <h2>Ajouter un Bien Immobilier</h2>
+    <form (ngSubmit)="onSubmit()" class="ajouter-bien-form">
+      <!-- Section Type de Transaction -->
+      <div class="form-card">
+        <h3><i class="bi bi-arrow-left-right"></i> Type de Transaction</h3>
+        <div class="transaction-options">
+          <label class="transaction-option">
+            <input type="radio" [(ngModel)]="annonce.typeTransaction" name="typeTransaction" value="Vente" required>
+            <div class="option-content">
+              <i class="bi bi-cash"></i>
+              <span>Vente</span>
+            </div>
+          </label>
+          <label class="transaction-option">
+            <input type="radio" [(ngModel)]="annonce.typeTransaction" name="typeTransaction" value="Location" required>
+            <div class="option-content">
+              <i class="bi bi-house-door"></i>
+              <span>Location</span>
+            </div>
+          </label>
+        </div>
+      </div>
+  
+      <!-- Section Catégorie du Bien -->
+      <div class="form-card">
+        <h3><i class="bi bi-grid"></i> Catégorie du Bien</h3>
+        <div class="category-options">
+          <label class="category-option">
+            <input type="radio" [(ngModel)]="annonce.categorie" name="categorie" value="Maison" (change)="onCategoryChange()" required>
+            <div class="option-content">
+              <i class="bi bi-house"></i>
+              <span>Maison</span>
+            </div>
+          </label>
+          <label class="category-option">
+            <input type="radio" [(ngModel)]="annonce.categorie" name="categorie" value="Appartement" (change)="onCategoryChange()" required>
+            <div class="option-content">
+              <i class="bi bi-building"></i>
+              <span>Appartement</span>
+            </div>
+          </label>
+          <label class="category-option">
+            <input type="radio" [(ngModel)]="annonce.categorie" name="categorie" value="Terrain" (change)="onCategoryChange()" required>
+            <div class="option-content">
+              <i class="bi bi-tree"></i>
+              <span>Terrain</span>
+            </div>
+          </label>
+        </div>
+      </div>
+  
+      <!-- Section Informations Générales -->
+      <div class="form-card">
+        <h3><i class="bi bi-info-circle"></i> Informations Générales</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label><i class="bi bi-card-heading"></i> Titre :</label>
+            <input type="text" [(ngModel)]="annonce.titre" name="titre" required>
+          </div>
+          <div class="form-group">
+            <label><i class="bi bi-text-paragraph"></i> Description :</label>
+            <textarea [(ngModel)]="annonce.description" name="description" rows="4" required></textarea>
+          </div>
+          <div class="form-group">
+            <label><i class="bi bi-geo-alt"></i> Région :</label>
+            <input type="text" [(ngModel)]="annonce.region" name="region" required>
+          </div>
+          <div class="form-group">
+            <label><i class="bi bi-building"></i> Ville :</label>
+            <input type="text" [(ngModel)]="annonce.ville" name="ville" required>
+          </div>
+          <div class="form-group">
+            <label><i class="bi bi-house-door"></i> Adresse :</label>
+            <input type="text" [(ngModel)]="annonce.adresse" name="adresse" required>
+          </div>
+          <div class="form-group">
+            <label><i class="bi bi-cash"></i> Prix :</label>
+            <input type="number" [(ngModel)]="annonce.prix" name="prix" required>
+          </div>
+          <div class="form-group">
+            <label><i class="bi bi-check-circle"></i> Disponible :</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="disponible" [(ngModel)]="annonce.disponible" name="disponible">
+              <label for="disponible" class="toggle-label"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Section Détails du Bien (Conditionnelle) -->
+      <div class="form-card" *ngIf="showDetails()">
+        <h3><i class="bi bi-house"></i> Détails du Bien</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label><i class="bi bi-rulers"></i> Surface (m²) :</label>
+            <input type="number" [(ngModel)]="annonce.surface" name="surface">
+          </div>
+          <div class="form-group">
+            <label><i class="bi bi-door-open"></i> Nombre de Chambres :</label>
+            <input type="number" [(ngModel)]="annonce.nombresChambres" name="nombresChambres">
+          </div>
+          <div class="form-group">
+            <label><i class="bi bi-grid"></i> Nombre de Pièces :</label>
+            <input type="number" [(ngModel)]="annonce.nombresPieces" name="nombresPieces">
+          </div>
+          <div class="form-group" *ngIf="annonce.categorie === 'Appartement'">
+            <label><i class="bi bi-layers"></i> Nombre d'Étages :</label>
+            <input type="number" [(ngModel)]="annonce.nombresEtages" name="nombresEtages">
+          </div>
+          <div class="form-group">
+            <label><i class="bi bi-droplet"></i> Nombre de Salles de Bain :</label>
+            <input type="number" [(ngModel)]="annonce.nombresSalleDeBain" name="nombresSalleDeBain">
+          </div>
+        </div>
+      </div>
+  
+      <!-- Section Équipements (Conditionnelle) -->
+      <div class="form-card" *ngIf="showDetails()">
+        <h3><i class="bi bi-tools"></i> Équipements</h3>
+        <div class="form-grid checkbox-grid">
+          <label><input type="checkbox" [(ngModel)]="annonce.climatiseur" name="climatiseur"> <i class="bi bi-snow"></i> Climatiseur</label>
+          <label><input type="checkbox" [(ngModel)]="annonce.jardin" name="jardin"> <i class="bi bi-tree"></i> Jardin</label>
+          <label><input type="checkbox" [(ngModel)]="annonce.garage" name="garage"> <i class="bi bi-car-front"></i> Garage</label>
+          <label><input type="checkbox" [(ngModel)]="annonce.chauffage" name="chauffage"> <i class="bi bi-thermometer-sun"></i> Chauffage</label>
+          <label><input type="checkbox" [(ngModel)]="annonce.balcon" name="balcon"> <i class="bi bi-building"></i> Balcon</label>
+          <label><input type="checkbox" [(ngModel)]="annonce.vueSurMer" name="vueSurMer"> <i class="bi bi-water"></i> Vue sur Mer</label>
+        </div>
+      </div>
+  
+      <!-- Section Images -->
+      <div class="form-card">
+        <h3><i class="bi bi-images"></i> Images</h3>
+        <div class="image-grid">
+          <div *ngFor="let image of annonce.images; let i = index" class="image-item">
+            <img [src]="image" alt="Image du bien">
+            <button class="delete-image" (click)="removeImage(i)"><i class="bi bi-trash"></i></button>
+          </div>
+          <div *ngFor="let empty of getEmptyImageSlots()" class="image-item add-image" (click)="triggerFileInput()">
+            <i class="bi bi-plus-lg"></i>
+          </div>
+        </div>
+        <input id="file-input" type="file" multiple (change)="onFileSelected($event)" hidden>
+      </div>
+  
+      <!-- Bouton de Soumission -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Publier l'Annonce</button>
+      </div>
+    </form>
+  </div>
+  <app-footer></app-footer>

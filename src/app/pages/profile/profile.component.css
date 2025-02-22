@@ -1,0 +1,47 @@
+/* 🌟 Conteneur principal */
+.profile-container {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  top: 70px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  margin-bottom: 100px;
+}
+
+/* 🎯 Sidebar (Fixé à gauche) */
+.sidebar-wrapper {
+  width: 300px;  /* Largeur fixe */
+  flex-shrink: 0; /* Empêche le rétrécissement */
+}
+
+/* 📄 Contenu principal (Prend tout l'espace restant) */
+.content-wrapper {
+  flex-grow: 1; /* Prend tout l’espace restant */
+  margin-left: 20px; /* Espacement entre la sidebar et le contenu */
+  
+  border-radius: 15px;
+  padding: 0px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-wrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .profile-container {
+    flex-direction: column; /* Afficher en colonne sur mobile */
+  }
+
+  .sidebar-wrapper {
+    width: 100%; /* Pleine largeur sur mobile */
+    margin-bottom: 20px;
+  }
+
+  .content-wrapper {
+    margin-left: 0;
+  }
+}

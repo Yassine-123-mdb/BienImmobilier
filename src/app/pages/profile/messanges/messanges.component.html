@@ -1,0 +1,36 @@
+<div class="messages-container">
+    <!-- Liste des contacts -->
+    <div class="contacts-list">
+      <div *ngFor="let contact of contacts" class="contact-item" (click)="selectContact(contact)">
+        <img [src]="contact.avatar" alt="Avatar" class="contact-avatar">
+        <div class="contact-info">
+          <h3>{{ contact.name }}</h3>
+          <p>{{ contact.lastMessage }}</p>
+          <small>{{ contact.lastMessageTime }}</small>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Boîte de discussion -->
+    <div class="chat-box" *ngIf="selectedContact">
+      <div class="chat-header">
+        <img [src]="selectedContact.avatar" alt="Avatar" class="chat-avatar">
+        <h3>{{ selectedContact.name }}</h3>
+      </div>
+      <div class="chat-messages">
+        <div *ngFor="let message of messages" class="message" [ngClass]="{'sent': message.senderId === 0, 'received': message.senderId !== 0}">
+          <p>{{ message.content }}</p>
+          <small>{{ message.timestamp }}</small>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="Tapez votre message..." #messageInput>
+        <button (click)="sendMessage(messageInput.value); messageInput.value = ''">Envoyer</button>
+      </div>
+    </div>
+  
+    <!-- Aucun contact sélectionné -->
+    <div class="no-contact-selected" *ngIf="!selectedContact">
+      <p>Sélectionnez un contact pour commencer une discussion.</p>
+    </div>
+  </div>

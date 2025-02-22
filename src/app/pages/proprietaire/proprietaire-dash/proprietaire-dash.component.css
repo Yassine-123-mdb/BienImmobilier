@@ -1,0 +1,12 @@
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 250px; /* Largeur de la sidebar */
+  }

@@ -1,0 +1,43 @@
+<app-navbar></app-navbar>
+
+<section class="container my-5">
+  <h2 class="text-center mb-4 text-dark fw-bold">Réserver ce bien</h2>
+
+  <!-- Formulaire de réservation -->
+  <form (ngSubmit)="onSubmit()" class="reservation-form">
+    <!-- Date de début -->
+    <div class="form-group mb-3">
+      <label for="dateDebut" class="form-label">Date de début</label>
+      <input
+        type="date"
+        id="dateDebut"
+        name="dateDebut"
+        class="form-control"
+        [(ngModel)]="reservation.dateDebut"
+        required
+      />
+    </div>
+
+    <!-- Date de fin -->
+    <div class="form-group mb-3">
+      <label for="dateFin" class="form-label">Date de fin</label>
+      <input
+        type="date"
+        id="dateFin"
+        name="dateFin"
+        class="form-control"
+        [(ngModel)]="reservation.dateFin"
+        required
+      />
+    </div>
+
+    <!-- Bouton de confirmation -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary btn-lg">
+        <i class="bi bi-calendar-check"></i> Confirmer la réservation
+      </button>
+    </div>
+  </form>
+</section>
+
+<app-footer></app-footer>

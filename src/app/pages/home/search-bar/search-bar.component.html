@@ -1,0 +1,164 @@
+<section class="search-bar bg-light p-4 rounded shadow-sm">
+    <div class="container">
+        <div class="row g-2 align-items-center">
+            <!-- Mot-clé -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Mot-clé..." [(ngModel)]="keyword">
+                </div>
+            </div>
+
+            <!-- Catégorie (Maison, Appartement, Terrain...) -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-building"></i></span>
+                    <select class="form-select" [(ngModel)]="selectedCategory">
+                        <option value="">Catégorie</option>
+                        <option value="maison">Maison</option>
+                        <option value="appartement">Appartement</option>
+                        <option value="terrain">Terrain</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Région -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                    <select class="form-select" [(ngModel)]="selectedRegion">
+                        <option value="">Région</option>
+                        <option value="tunis">Tunis</option>
+                        <option value="sousse">Sousse</option>
+                        <option value="nabeul">Nabeul</option>
+                        <option value="sfax">Sfax</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Bouton Rechercher -->
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">🔍 Rechercher</button>
+            </div>
+
+            <!-- Bouton Filtrage avancé -->
+            <div class="col-md-1 text-center">
+                <button class="btn btn-outline-secondary" (click)="toggleFilters()">
+                    <i class="bi bi-funnel"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Section des filtres avancés (affichée dynamiquement) -->
+        <div class="advanced-filters mt-3 p-3 rounded shadow-sm" *ngIf="showAdvancedFilters">
+            <h5>Filtres avancés pour <strong>{{ selectedCategory | titlecase }}</strong></h5>
+
+            <!-- Sélection du type d'opération (Acheter/Louer) -->
+            <div class="row g-2 mb-3">
+                <div class="col-md-12">
+                    <h6>Type d'opération</h6>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="operation" id="tous" value="tous" [(ngModel)]="selectedOperation">
+                        <label class="form-check-label" for="tous">Tous</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="operation" id="acheter" value="acheter" [(ngModel)]="selectedOperation">
+                        <label class="form-check-label" for="acheter">Acheter</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="operation" id="louer" value="louer" [(ngModel)]="selectedOperation">
+                        <label class="form-check-label" for="louer">Louer</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-2">
+                <!-- Filtres pour MAISON -->
+                <div *ngIf="selectedCategory === 'maison'" class="row">
+                    <div class="col-md-4">
+                        <h6>Nombre de pièces</h6>
+                        <select class="form-select" [(ngModel)]="selectedFilters.pieces">
+                            <option *ngFor="let option of nombrePieces" [value]="option">{{ option }}+</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Nombre de chambres</h6>
+                        <select class="form-select" [(ngModel)]="selectedFilters.chambres">
+                            <option *ngFor="let option of nombreChambres" [value]="option">{{ option }}+</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Nombre de salles de bain</h6>
+                        <select class="form-select" [(ngModel)]="selectedFilters.sallesDeBain">
+                            <option *ngFor="let option of nombreSallesDeBain" [value]="option">{{ option }}+</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Surface min (m²)</h6>
+                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.surface" min="50" max="300" step="50">
+                        <span>{{ selectedFilters.surface }} m²</span>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Prix max (TND)</h6>
+                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.budget" min="50000" max="500000" step="10000">
+                        <span>{{ selectedFilters.budget }} TND</span>
+                    </div>
+                    <div class="col-md-12">
+                        <h6>Equipements</h6>
+                        <div *ngFor="let equipment of equipmentOptions" class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" [value]="equipment" [(ngModel)]="selectedFilters.equipments" [checked]="isChecked(equipment)">
+                            <label class="form-check-label">{{ equipment }}</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtres pour APPARTEMENT -->
+                <div *ngIf="selectedCategory === 'appartement'" class="row">
+                    <div class="col-md-4">
+                        <h6>Nombre d’étages</h6>
+                        <select class="form-select" [(ngModel)]="selectedFilters.etages">
+                            <option *ngFor="let e of etages" [value]="e">{{ e }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Nombre de pièces</h6>
+                        <select class="form-select" [(ngModel)]="selectedFilters.pieces">
+                            <option *ngFor="let option of nombrePieces" [value]="option">{{ option }}+</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Nombre de chambres</h6>
+                        <select class="form-select" [(ngModel)]="selectedFilters.chambres">
+                            <option *ngFor="let option of nombreChambres" [value]="option">{{ option }}+</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Nombre de salles de bain</h6>
+                        <select class="form-select" [(ngModel)]="selectedFilters.sallesDeBain">
+                            <option *ngFor="let option of nombreSallesDeBain" [value]="option">{{ option }}+</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Surface min (m²)</h6>
+                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.surface" min="50" max="300" step="50">
+                        <span>{{ selectedFilters.surface }} m²</span>
+                    </div>
+                </div>
+
+                <!-- Filtres pour TERRAIN -->
+                <div *ngIf="selectedCategory === 'terrain'" class="row">
+                    <div class="col-md-4">
+                        <h6>Surface du terrain (m²)</h6>
+                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.surface" min="100" max="1000" step="50">
+                        <span>{{ selectedFilters.surface }} m²</span>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Prix max (TND)</h6>
+                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.budget" min="20000" max="200000" step="5000">
+                        <span>{{ selectedFilters.budget }} TND</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

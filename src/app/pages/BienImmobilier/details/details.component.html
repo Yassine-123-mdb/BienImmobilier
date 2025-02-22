@@ -1,0 +1,79 @@
+<app-navbar></app-navbar>
+<div class="details-container">
+    <!-- Section gauche : Images et détails du bien -->
+    <div class="bien-content">
+      <h2>{{ bien.titre }}</h2>
+      <p class="price">{{ bien.prix | currency:'TND' }}</p>
+  
+      <!-- Grande image principale avec navigation -->
+      <div class="image-display">
+        <button class="arrow left" (click)="changerImagePrincipale(imagePrincipaleIndex - 1)">&#9665;</button>
+        <img [src]="imagePrincipale" class="main-image" alt="Image principale">
+        <button class="arrow right" (click)="changerImagePrincipale(imagePrincipaleIndex + 1)">&#9655;</button>
+      </div>
+  
+      <!-- Galerie de miniatures -->
+      <div class="thumbnail-gallery">
+        <img *ngFor="let img of bien.images; let i = index" [src]="img" class="thumbnail" 
+             [class.active]="i === imagePrincipaleIndex" (click)="changerImagePrincipale(i)">
+      </div>
+  
+      <!-- Infos du bien -->
+      <div class="bien-info">
+        <p class="description">{{ bien.description }}</p>
+        <div class="features">
+          <span><i class="bi bi-house-door"></i> Type : {{ bien.type }}</span>
+          <span><i class="bi bi-geo-alt"></i> Localisation : {{ bien.localisation }}</span>
+          <span><i class="bi bi-arrows-fullscreen"></i> Surface : {{ bien.surface }} m²</span>
+          <span *ngIf="bien.chambres"><i class="bi bi-door-open"></i> Chambres : {{ bien.chambres }}</span>
+          <span *ngIf="bien.etages"><i class="bi bi-building"></i> Étages : {{ bien.etages }}</span>
+        </div>
+  
+        <!-- Boutons -->
+        <div class="actions">
+          <a [routerLink]="['/reservation', bien.id]" class="btn btn-warning">
+            <i class="bi bi-calendar-check"></i> Réserver
+          </a>
+          <button class="btn btn-outline-danger" (click)="ajouterAuxFavoris()">❤️ Ajouter aux favoris</button>
+        </div>
+      </div>
+  
+      <!-- Carte Google Maps -->
+      <div class="map-container">
+        <iframe width="100%" height="300" frameborder="0" [src]="safeMapUrl"></iframe>
+      </div>
+    </div>
+  
+    <!-- Section droite : Propriétaire + Chat -->
+    <!-- Section Propriétaire -->
+<div class="proprietaire-info">
+  <img [src]="bien.proprietaire.photo || 'assets/default-avatar.jpg'" alt="Photo du propriétaire">
+  <h4> {{ bien.proprietaire.nom }}</h4>
+  <p><i class="bi bi-phone"></i> <a href="tel:{{ bien.proprietaire.telephone }}">{{ bien.proprietaire.telephone }}</a></p>
+  <p><i class="bi bi-envelope"></i> <a href="mailto:{{ bien.proprietaire.email }}">{{ bien.proprietaire.email }}</a></p>
+  
+  <!-- Chat Messenger -->
+  <div class="chat-box">
+    <h5>💬 Chat avec le propriétaire</h5>
+
+    <!-- Zone des messages -->
+    <div class="messages">
+        <p *ngFor="let msg of messages" 
+           [class.me]="msg.sender === 'Moi'" 
+           [class.proprietaire]="msg.sender !== 'Moi'">
+            <strong>{{ msg.sender }}:</strong> {{ msg.text }}
+        </p>
+    </div>
+
+    <!-- Zone de saisie -->
+    <div class="chat-input-container">
+        <input type="text" [(ngModel)]="newMessage" placeholder="Écrire un message..." (keyup.enter)="envoyerMessage()">
+        <button (click)="envoyerMessage()">📩</button>
+    </div>
+</div>
+
+</div>
+
+  </div>
+<app-why-choose-us></app-why-choose-us>
+<app-footer></app-footer>

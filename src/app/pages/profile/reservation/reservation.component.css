@@ -1,0 +1,169 @@
+
+
+/* Liste des réservations */
+.reservation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 200px;
+}
+
+/* Élément de la réservation */
+.reservation-item {
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reservation-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Image du bien */
+.reservation-image {
+    flex: 0 0 350px;
+    overflow: hidden;
+}
+
+.reservation-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.reservation-item:hover .reservation-image img {
+    transform: scale(1.05);
+}
+
+/* Détails de la réservation */
+.reservation-details {
+    flex: 1;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.reservation-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0;
+}
+
+.reservation-description {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+/* Informations supplémentaires */
+.reservation-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #555;
+    font-size: 1rem;
+}
+
+.info-item i {
+    color: #00796b;
+    font-size: 1.2rem;
+}
+
+/* Actions */
+.reservation-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+.reservation-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 25px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.reservation-actions .btn-primary {
+    background-color: #00796b;
+    border-color: #00796b;
+    color: white;
+}
+
+.reservation-actions .btn-primary:hover {
+    background-color: #005f56;
+    border-color: #005f56;
+    transform: scale(1.05);
+}
+
+.reservation-actions .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.reservation-actions .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+    transform: scale(1.05);
+}
+
+/* Badges */
+.badge {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 20px;
+    margin-left: 8px;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+/* Responsive pour les écrans plus petits */
+@media (max-width: 768px) {
+    .reservation-item {
+        flex-direction: column;
+    }
+
+    .reservation-image {
+        flex: 0 0 250px;
+    }
+
+    .reservation-details {
+        padding: 20px;
+    }
+
+    .reservation-info {
+        gap: 15px;
+    }
+
+    .reservation-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

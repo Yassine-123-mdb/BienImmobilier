@@ -1,0 +1,80 @@
+<section class="container my-5">
+  <h2 class="text-center mb-4 text-dark fw-bold">Mes Annonces</h2>
+
+  <!-- Liste des annonces -->
+  <div class="annonces-list">
+    <!-- Boucle sur les annonces -->
+    <div class="annonce-item" *ngFor="let annonce of annonces">
+      <div class="annonce-image">
+        <img [src]="annonce.images[0]" alt="Image de l'annonce" loading="lazy" />
+      </div>
+      <div class="annonce-details">
+        <!-- Titre, état et transaction -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="annonce-title">{{ annonce.titre }}</h3>
+          <div class="d-flex gap-2">
+            <span
+              class="badge"
+              [ngClass]="{
+                'bg-success': annonce.disponible,
+                'bg-danger': !annonce.disponible
+              }"
+            >
+              {{ annonce.disponible ? 'Disponible' : 'Non disponible' }}
+            </span>
+            <span class="badge bg-info">
+              {{ annonce.transaction === 'louer' ? 'À louer' : 'À vendre' }}
+            </span>
+          </div>
+        </div>
+
+        <p class="annonce-description">{{ annonce.description | slice:0:150 }}...</p>
+
+        <!-- Détails supplémentaires -->
+        <div class="annonce-info">
+          <div class="info-item">
+            <i class="bi bi-geo-alt"></i>
+            <span>{{ annonce.ville }}, {{ annonce.adresse }}</span>
+          </div>
+          <div class="info-item">
+            <i class="bi bi-house-door"></i>
+            <span>{{ annonce.type }}</span>
+          </div>
+          <div class="info-item">
+            <i class="bi bi-arrows-fullscreen"></i>
+            <span>{{ annonce.surface }} m²</span>
+          </div>
+          <div class="info-item" *ngIf="annonce.chambres">
+            <i class="bi bi-door-open"></i>
+            <span>{{ annonce.chambres }} chambres</span>
+          </div>
+          <div class="info-item" *ngIf="annonce.etages">
+            <i class="bi bi-building"></i>
+            <span>{{ annonce.etages }} étages</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="annonce-actions">
+          <button class="btn btn-primary" (click)="modifierAnnonce(annonce.id)">
+            <i class="bi bi-pencil"></i> Modifier
+          </button>
+          <button class="btn btn-danger" (click)="supprimerAnnonce(annonce.id)">
+            <i class="bi bi-trash"></i> Supprimer
+          </button>
+          <button class="btn btn-secondary" (click)="voirDetails(annonce.id)">
+            <i class="bi bi-eye"></i> Voir Détails
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message si aucune annonce -->
+    <div *ngIf="annonces.length === 0" class="text-center mt-5">
+      <div class="alert alert-info">
+        <p class="mb-3">Aucune annonce publiée pour le moment.</p>
+        <a routerLink="/publier-annonce" class="btn btn-primary">Publier une annonce</a>
+      </div>
+    </div>
+  </div>
+</section>

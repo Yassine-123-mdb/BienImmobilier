@@ -1,0 +1,97 @@
+/* 🌟 Style général de la barre de recherche */
+.search-bar {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* 🏠 Espacement entre les éléments */
+.search-bar .row {
+    align-items: center;
+}
+
+/* 🎨 Style des icônes dans les champs */
+.input-group-text {
+    background-color: #00796b;
+    color: white;
+    border: none;
+}
+
+/* Supprimer la bordure gauche des champs pour fusionner avec l'icône */
+.input-group .form-control,
+.input-group .form-select {
+    border-left: 0;
+}
+
+/* 🎯 Boutons principaux */
+.btn-primary {
+    background-color: #00796b;
+    border: none;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #005a4f;
+}
+
+/* 🎛 Bouton de filtrage avancé */
+.btn-outline-secondary {
+    border-color: #00796b;
+    color: #00796b;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #00796b;
+    color: white;
+}
+
+/* 🎭 Animation d'ouverture des filtres avancés */
+.advanced-filters {
+    display: contents;
+    opacity: 0;
+    background: rgba(255, 255, 255, 0.95);
+    transition: opacity 0.4s ease-in-out, height 0.4s ease-in-out;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+
+/* Affichage dynamique des filtres */
+.show-filters {
+    display: block;
+    opacity: 1;
+}
+
+/* 📝 Style des titres des filtres avancés */
+.advanced-filters h6 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #00796b;
+}
+
+/* 🏗 Ajout d'une légère ombre pour améliorer la visibilité des champs */
+.form-control, .form-select {
+    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+/* 🌟 Effet sur le bouton de filtrage avancé lorsqu'il est actif */
+.btn-outline-secondary.active {
+    background-color: #00796b;
+    color: white;
+}
+
+/* 🚀 Ajout d'une animation pour afficher les filtres avancés */
+.advanced-filters {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+}
+
+.show-filters {
+    max-height: 500px; /* Ajuster selon le contenu */
+    opacity: 1;
+}
