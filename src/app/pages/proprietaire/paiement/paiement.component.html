@@ -1,0 +1,93 @@
+<section class="paiement-container">
+  <h2 >Paiement de l'abonnement</h2>
+
+  <!-- Choix du mode de paiement -->
+  <div class="mode-paiement mb-5">
+    <h3>Choisissez un mode de paiement</h3>
+    <div class="paiement-options">
+      <button
+        class="paiement-option"
+        [ngClass]="{ active: modePaiement === 'carte' }"
+        (click)="choisirModePaiement('carte')"
+      >
+        <i class="bi bi-credit-card"></i>
+        <span>Carte bancaire</span>
+      </button>
+      <button
+        class="paiement-option"
+        [ngClass]="{ active: modePaiement === 'virement' }"
+        (click)="choisirModePaiement('virement')"
+      >
+        <i class="bi bi-bank"></i>
+        <span>Virement bancaire</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulaire de paiement par carte -->
+  <div *ngIf="modePaiement === 'carte'" class="formulaire-paiement">
+    <h3>Informations de la carte</h3>
+    <form (ngSubmit)="onSubmit()" class="paiement-form">
+      <div class="form-group mb-3">
+        <label for="numeroCarte" class="form-label">Numéro de carte</label>
+        <input
+          type="text"
+          id="numeroCarte"
+          name="numeroCarte"
+          class="form-control"
+          [(ngModel)]="paiement.numeroCarte"
+          required
+          placeholder="1234 5678 9012 3456"
+        />
+      </div>
+      <div class="form-group mb-3">
+        <label for="dateExpiration" class="form-label">Date d'expiration</label>
+        <input
+          type="text"
+          id="dateExpiration"
+          name="dateExpiration"
+          class="form-control"
+          [(ngModel)]="paiement.dateExpiration"
+          required
+          placeholder="MM/AA"
+        />
+      </div>
+      <div class="form-group mb-3">
+        <label for="cvv" class="form-label">CVV</label>
+        <input
+          type="text"
+          id="cvv"
+          name="cvv"
+          class="form-control"
+          [(ngModel)]="paiement.cvv"
+          required
+          placeholder="123"
+        />
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary btn-lg">
+          <i class="bi bi-lock"></i> Payer maintenant
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Instructions pour le virement bancaire -->
+  <div *ngIf="modePaiement === 'virement'" class="virement-instructions">
+    <h3>Instructions pour le virement bancaire</h3>
+    <p>
+      Veuillez effectuer un virement à l'adresse suivante :
+    </p>
+    <ul>
+      <li><strong>Banque :</strong> Banque XYZ</li>
+      <li><strong>IBAN :</strong> TN59 1234 5678 9012 3456 7890</li>
+      <li><strong>BIC :</strong> XYZDTNTT</li>
+      <li><strong>Bénéficiaire :</strong> Votre Nom</li>
+    </ul>
+    <p>
+      Une fois le virement effectué, veuillez envoyer une preuve de paiement à
+      <a href="mailto:paiement@example.com">paiement &#64; example.com</a>.
+    </p>
+  </div>
+</section>
+

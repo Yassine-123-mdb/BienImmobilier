@@ -1,184 +1,109 @@
-/* Conteneur principal */
-.container {
-    position: relative;
-    top: 40px;
+/* styles.css ou component.css */
+.favoris-list {
+  margin-bottom: 200px;
+}
+
+.card {
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-img-top {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-text {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.favoris-info {
+  margin-bottom: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #555;
+  font-size: 1rem;
+}
+
+.info-item i {
+  color: #00796b;
+  font-size: 1.2rem;
+}
+
+.favoris-actions .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.favoris-actions .btn-outline-primary {
+  border-color: #00796b;
+  color: #00796b;
+}
+
+.favoris-actions .btn-outline-primary:hover {
+  background-color: #00796b;
+  color: white;
+}
+
+.favoris-actions .btn-outline-warning {
+  border-color: #ffc107;
+  color: #ffc107;
+}
+
+.favoris-actions .btn-outline-warning:hover {
+  background-color: #ffc107;
+  color: black;
+}
+
+.badge {
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+
+/* Responsive pour les petits écrans */
+@media (max-width: 768px) {
+  .card-title {
+    font-size: 1.1rem;
   }
-  
-  /* Liste des favoris */
-  .favoris-list {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    margin-bottom: 200px;
+
+  .card-text {
+    font-size: 0.8rem;
   }
-  
-  /* Élément de la liste */
-  .favoris-item {
-    display: flex;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .favoris-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Image du bien */
-  .favoris-image {
-    flex: 0 0 350px;
-    overflow: hidden;
-  }
-  
-  .favoris-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-  
-  .favoris-item:hover .favoris-image img {
-    transform: scale(1.05);
-  }
-  
-  /* Détails du bien */
-  .favoris-details {
-    flex: 1;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  .favoris-title {
-    font-size: 1.75rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 0; /* Supprimer la marge en bas */
-  }
-  
-  .favoris-description {
-    color: #666;
-    font-size: 1rem;
-    margin-bottom: 20px;
-  }
-  
-  /* Informations supplémentaires */
-  .favoris-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .info-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #555;
-    font-size: 1rem;
-  }
-  
-  .info-item i {
-    color: #00796b;
-    font-size: 1.2rem;
-  }
-  
-  /* Actions */
-  .favoris-actions {
-    display: flex;
-    gap: 10px; /* Espacement réduit */
-    margin-top: 15px;
-  }
+
   .favoris-actions .btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 25px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .favoris-actions .btn-primary {
-    background-color: #00796b;
-    border-color: #00796b;
-    color: white;
-  }
-  
-  .favoris-actions .btn-primary:hover {
-    background-color: #005f56;
-    border-color: #005f56;
-    transform: scale(1.05);
-  }
-  
-  .favoris-actions .btn-warning {
-    background-color: #ffc107;
-    border-color: #ffc107;
-    color: black;
-  }
-  
-  .favoris-actions .btn-warning:hover {
-    background-color: #e0a800;
-    border-color: #e0a800;
-    transform: scale(1.05);
-  }
-  
-  .favoris-actions .btn-outline-danger {
-    border-color: #dc3545;
-    color: #dc3545;
-  }
-  
-  .favoris-actions .btn-outline-danger:hover {
-    background-color: #dc3545;
-    color: white;
-    transform: scale(1.05);
-  }
-  
-  /* Badges */
-  .badge {
     font-size: 0.9rem;
-    padding: 8px 12px;
-    border-radius: 20px;
-    margin-left: 8px; /* Espacement entre les badges */
+    padding: 8px 16px;
   }
-  
-  .bg-success {
-    background-color: #28a745 !important;
-  }
-  
-  .bg-danger {
-    background-color: #dc3545 !important;
-  }
-  
-  .bg-info {
-    background-color: #17a2b8 !important;
-  }
-  
-  /* Responsive pour les écrans plus petits */
-  @media (max-width: 768px) {
-    .favoris-item {
-      flex-direction: column;
-    }
-  
-    .favoris-image {
-      flex: 0 0 250px;
-    }
-  
-    .favoris-details {
-      padding: 20px;
-    }
-  
-    .favoris-info {
-      gap: 15px;
-    }
-  
-    .favoris-actions {
-      flex-direction: column;
-      gap: 10px;
-    }
-  }
+}

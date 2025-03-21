@@ -7,7 +7,7 @@
     gap: 50px;
     padding: 20px;
     position: relative;
-    top: 20px;
+    top: 30px;
 }
 
 /* Boîte de connexion avec effet verre */
@@ -88,4 +88,11 @@
 
 .text-primary:hover {
     text-decoration: underline;
+}
+@media (max-width: 990px) {
+    .login-container {
+        background-image: url('../../../../assets/appart4.jpg'); /* Image de fond pour petits écrans */
+        background-size: cover;
+        background-position: center;
+    }
 }

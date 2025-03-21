@@ -13,4 +13,6 @@
   .footer a:hover {
     text-decoration: underline;
   }
-  
+  .bar{
+    background-color: rgb(50, 121, 82);
+  }

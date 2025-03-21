@@ -81,3 +81,27 @@
 .text-primary:hover {
     text-decoration: underline;
 }
+@media (max-width: 990px) {
+    .register-container {
+        background-image: url('../../../../assets/appart3.jpg'); /* Image de fond pour petits écrans */
+        background-size: cover;
+        background-position: center;
+    }
+
+    .register-box {
+        width: 90%; /* Réduire la largeur du formulaire */
+        padding: 20px;
+    }
+
+    .register-box h2 {
+        font-size: 22px; /* Taille de police plus petite */
+    }
+
+    .input-group-text {
+        font-size: 14px; /* Taille de police plus petite pour les icônes */
+    }
+
+    .btn-primary {
+        font-size: 14px; /* Taille de police plus petite pour le bouton */
+    }
+}

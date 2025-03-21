@@ -3,8 +3,16 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
+  isMenuOpen = false;
 
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+    const content = document.querySelector('.content');
+    if (content) {
+      content.classList.toggle('shifted', this.isMenuOpen);
+    }
+  }
 }

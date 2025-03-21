@@ -1,0 +1,45 @@
+<div class="reservations-container">
+    <h2>Gestion des Réservations</h2>
+  
+    <!-- Filtres -->
+    <div class="filtres">
+      <button
+        *ngFor="let filtre of filtres"
+        [ngClass]="{ active: filtreActif === filtre.value }"
+        (click)="changerFiltre(filtre.value)"
+      >
+        {{ filtre.label }}
+      </button>
+    </div>
+  
+    <!-- Liste des Réservations -->
+    <div class="reservations-list">
+      <div *ngFor="let reservation of reservationsFiltrees" class="reservation-card">
+        <div class="reservation-header">
+          <h3>{{ reservation.bien.titre }}</h3>
+          <span class="statut" [ngClass]="reservation.statut">{{ reservation.statut }}</span>
+        </div>
+        <div class="reservation-details">
+          <p><strong>Client :</strong> {{ reservation.client.nom }}</p>
+          <p><strong>Dates :</strong> {{ reservation.dateDebut | date:'dd/MM/yyyy' }} - {{ reservation.dateFin | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Prix :</strong> {{ reservation.prix }} TND</p>
+        </div>
+        <div class="reservation-actions">
+          <button *ngIf="reservation.statut === 'en_attente'" class="btn btn-accepter" (click)="accepterReservation(reservation.id)">
+            <i class="bi bi-check-circle"></i> Accepter
+          </button>
+          <button *ngIf="reservation.statut === 'en_attente'" class="btn btn-refuser" (click)="refuserReservation(reservation.id)">
+            <i class="bi bi-x-circle"></i> Refuser
+          </button>
+          <button class="btn btn-details" (click)="voirDetails(reservation)">
+            <i class="bi bi-eye"></i> Détails
+          </button>
+        </div>
+      </div>
+  
+      <!-- Message si aucune réservation -->
+      <div *ngIf="reservationsFiltrees.length === 0" class="no-reservations">
+        <p>Aucune réservation trouvée.</p>
+      </div>
+    </div>
+  </div>

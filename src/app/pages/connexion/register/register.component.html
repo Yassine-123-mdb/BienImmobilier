@@ -8,19 +8,21 @@
 
         <form (ngSubmit)="onRegister()">
             <!-- Sélection du rôle -->
+            <!-- Sélection du rôle -->
             <div class="mb-3 text-center">
                 <label class="form-label">Vous êtes :</label>
                 <div class="d-flex justify-content-center">
                     <div class="form-check me-3">
-                        <input type="radio" class="form-check-input" [(ngModel)]="role" name="role" value="proprietaire" required>
+                        <input type="radio" class="form-check-input" [(ngModel)]="roles[0]" name="role" [value]="'PROPRIETAIRE'" required>
                         <label class="form-check-label">Propriétaire</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" [(ngModel)]="role" name="role" value="visiteur" required>
+                        <input type="radio" class="form-check-input" [(ngModel)]="roles[0]" name="role" [value]="'VISITEUR'" required>
                         <label class="form-check-label">Visiteur</label>
                     </div>
                 </div>
             </div>
+
 
             <!-- Nom et Prénom -->
             <div class="input-group mb-3">
@@ -91,7 +93,7 @@
     </div>
 
     <!-- Image à droite -->
-    <div class="register-image">
+    <div class="register-image d-none d-lg-block">
         <img src="assets/appart3.jpg"alt="Illustration d'inscription">
     </div>
 </div>

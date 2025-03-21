@@ -1,0 +1,131 @@
+.abonnement-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 15px;
+    font-family: 'Poppins', sans-serif;
+    background-color: #a8ebe3;
+  }
+  
+  h2, h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+  }
+ 
+  
+  /* Section Abonnement Actuel */
+  .abonnement-actuel {
+    margin-bottom: 40px;
+  }
+  
+  .abonnement-card {
+    background: rgba(255, 255, 255, 0.493);
+    padding: 20px;
+    border-radius: 12px;
+    border:2px solid #0a5236;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .abonnement-icon {
+    font-size: 30px;
+    color: #56b3a8;
+  }
+  
+  .abonnement-details p {
+    margin: 5px 0;
+    color: #333;
+  }
+  
+  /* Message si aucun abonnement */
+  .no-abonnement {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .no-abonnement p {
+    color: #666;
+    margin: 5px 0;
+  }
+  
+  /* Section Choisir un Abonnement */
+  .choisir-abonnement {
+    margin-top: 20px;
+  }
+  
+  .abonnement-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .abonnement-option {
+    background: rgb(0, 0, 0);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .abonnement-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .abonnement-option.selected {
+    border: 2px solid #e20d1f;
+    background-color: #0a5236;
+    
+  }
+  
+  .abonnement-option h4 {
+    font-size: 20px;
+    color: #d6e1eb;
+    margin-bottom: 10px;
+  }
+  
+  .abonnement-option p {
+    font-size: 16px;
+    color: #c4c0c0;
+    margin: 5px 0;
+  }
+  
+  .abonnement-option .prix {
+    font-size: 18px;
+    font-weight: bold;
+    color: #56b3a8;
+  }
+  
+  .btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    background: #56b3a8;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .btn:hover {
+    background: #488d8d;
+  }
+  
+  .btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .abonnement-options {
+      grid-template-columns: 1fr;
+    }
+  }

@@ -7,10 +7,10 @@ import { Component } from '@angular/core';
 })
 export class HeroComponent {
   images: string[] = [
-    'assets/images.jfif',
-    'assets/image2.jfif',
+    'assets/hero7.jpg',
+    'assets/hero2.jpeg',
     'assets/banner.jpg',
-    'assets/image4.jfif'
+    'assets/hero8.jpeg'
   ];
   currentIndex: number = 0;
   currentImage: string = this.images[this.currentIndex];

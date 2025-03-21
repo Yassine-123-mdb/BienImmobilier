@@ -1,64 +1,121 @@
 /* Conteneur principal */
 .container {
-    margin-top: 300px;
-    position: relative;
-    top: 50px;
-  }
-  app-footer{
-    position: relative;
-    top: 60px;
+  position: relative;
+  top: 20px;
+  left: 100px;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+}
 
-  }
-  /* Formulaire de réservation */
-  .reservation-form {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
+/* Détails du bien */
+.bien-details {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.bien-details h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.bien-details p {
+  color: #666;
+  margin: 5px 0;
+}
+
+/* Formulaire de réservation */
+.reservation-form {
+  max-width: 520px;
+  margin: 0 auto;
   
-  /* Champs de formulaire */
-  .form-group {
-    margin-bottom: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Champs de formulaire */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #00796b;
+  outline: none;
+}
+
+/* Résumé de la réservation */
+.reservation-summary {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.reservation-summary h4 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.reservation-summary p {
+  color: #666;
+  margin: 5px 0;
+}
+
+/* Bouton de confirmation */
+.btn-primary {
+  background-color: #00796b;
+  border-color: #00796b;
+  font-weight: bold;
+  padding: 10px 20px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #005f56;
+  border-color: #005f56;
+  transform: scale(1.05);
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+}
+
+.btn-primary:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Messages d'erreur */
+.text-danger {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+@media(max-width:768px){
+  /* Pour les écrans inférieurs à 768px */
+  .container {
+    position: relative;
+    left: 0;
   }
-  
-  .form-label {
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .form-control {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-  }
-  
-  .form-control:focus {
-    border-color: #00796b;
-    outline: none;
-  }
-  
-  /* Bouton de confirmation */
-  .btn-primary {
-    background-color: #00796b;
-    border-color: #00796b;
-    font-weight: bold;
-    padding: 10px 20px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .btn-primary:hover {
-    background-color: #005f56;
-    border-color: #005f56;
-    transform: scale(1.05);
-  }
-  
-  .btn-primary:active {
-    transform: scale(0.95);
-  }
+ 
+}

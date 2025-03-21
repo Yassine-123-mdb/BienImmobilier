@@ -1,42 +1,268 @@
+/* 🌟 Style général de la barre de recherche */
+.search-bar {
+  background: transparent;
+  border-radius: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  
+}
+/* Style général de la section */
+.container {
+  padding: 20px;
+  
+}
+
+
+/* 🏠 Espacement entre les éléments */
+.search-bar .row {
+  margin-top: 20px;
+  
+  
+  flex-wrap: wrap;
+  
+
+}
+
+/* 🎨 Style des icônes dans les champs */
+.input-group-text {
+  background-color: #00796b;
+  color: white;
+  border: none;
+ 
+}
+
+/* Supprimer la bordure gauche des champs pour fusionner avec l'icône */
+.input-group .form-control,
+.input-group .form-select {
+  border-left: 0;
+  transition: all 0.3s ease-in-out;
+
+  padding: 10px 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  background: #f8f9fa;
+  font-size: 16px;
+  color: #495057;
+  font-family: 'Poppins', sans-serif;
+
+
+}
+
+/* 🎯 Boutons principaux */
+.btn-primary {
+ 
+  background: linear-gradient(45deg, #00796b, #004d40);
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #004d40, #00796b);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 🎛 Bouton de filtrage avancé */
+.btn-outline-secondary {
+  border-color: #00796b;
+  color: #00796b;
+  
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #00796b;
+  color: white;
+}
+
+/* 🎭 Animation d'ouverture des filtres avancés */
+.advanced-filters {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.advanced-filters.show-filters {
+  max-height: 500px; /* Ajustez selon le contenu */
+  opacity: 1;
+}
+
+/* 📝 Style des titres des filtres avancés */
+.advanced-filters h6 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #00796b;
+}
+
+/* 🏗 Ajout d'une légère ombre pour améliorer la visibilité des champs */
+.form-control, .form-select {
+  box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #000000;
+}
+
+/* 🌟 Effet sur le bouton de filtrage avancé lorsqu'il est actif */
+.btn-outline-secondary.active {
+  background-color: #00796b;
+  color: white;
+}
+
+/* 🚀 Ajout d'une animation pour afficher les filtres avancés */
+.advanced-filters {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+}
+
+.show-filters {
+  max-height: 500px; /* Ajuster selon le contenu */
+  opacity: 1;
+}
+/* Style du carrousel */
+.carousel {
+  margin: 10px;
+}
+
+
+/* Style des cartes */
+.card-hover {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-hover:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Style de l'image */
+.card-hover img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.card-hover:hover img {
+  transform: scale(1.1);
+}
+
+/* Style du titre */
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #00796b;
+  margin-bottom: 15px;
+}
+
+/* Style du texte */
+.card-text {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Style du bouton */
+.btn-outline-primary {
+  border-color: #00796b;
+  color: #00796b;
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.btn-outline-primary:hover {
+  background-color: #00796b;
+  color: white;
+}
+
+/* Style du pied de carte */
+.card-footer {
+  background: transparent;
+  border-top: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card-hover {
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+
+  .card-text {
+    font-size: 0.9rem;
+  }
+}
+
+
+/* 🏗 Style des cartes */
 .card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.default-swiper {
+  position: relative;
+  padding: 20px 0;
+}
+
+/* Style de l'image */
+.card-img-hover {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px 15px 0 0;
+}
+
+.card-img-hover img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.card-hover:hover img {
+  transform: scale(1.1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 📱 Ajustements pour les petits écrans */
+@media (max-width: 768px) {
+  .search-bar {
+    padding: 10px;
   }
-  
-  .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  .card-body {
+    padding: 10px;
   }
-  
-  .card-img-top {
-    height: 200px;
-    object-fit: cover;
+
+  .col-md-3 {
+    margin-bottom: 10px;
   }
-  
-  .pagination {
-    justify-content: center;
-    font-size: 1.2rem;
-  }
-  
-  .page-item {
-    margin: 0 5px;
-  }
-  
-  .page-link {
-    padding: 8px 16px;
-    border-radius: 50%;
-  }
-  
-  .page-item.active .page-link {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .page-item.disabled .page-link {
-    color: #ccc;
-  }
-  
-  .page-item a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
+}

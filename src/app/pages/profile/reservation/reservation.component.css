@@ -1,5 +1,10 @@
-
-
+.container{
+    background-color: rgb(234, 238, 252);
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
 /* Liste des réservations */
 .reservation-list {
     display: flex;
@@ -7,6 +12,11 @@
     gap: 25px;
     margin-bottom: 200px;
 }
+h2{
+    font-size: 30px;
+    color: #333;
+    text-align: center;
+  }
 
 /* Élément de la réservation */
 .reservation-item {
@@ -14,6 +24,7 @@
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgb(7, 2, 2);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }

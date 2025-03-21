@@ -1,0 +1,45 @@
+<div class="abonnement-container">
+    <h2>Mon abonnement</h2>
+  
+    <!-- Section Abonnement Actuel -->
+    <div *ngIf="abonnementActuel; else noAbonnement" class="abonnement-actuel">
+      <h3>Mon abonnement actuel</h3>
+      <div class="abonnement-card">
+        <div class="abonnement-icon">
+          <i class="bi bi-credit-card"></i>
+        </div>
+        <div class="abonnement-details">
+          <p><strong>Type :</strong> {{ abonnementActuel.type }}</p>
+          <p><strong>Annonces autorisées :</strong> {{ abonnementActuel.nbrAnnonceAutorisees === -1 ? 'Illimitées' : abonnementActuel.nbrAnnonceAutorisees }}</p>
+          <p><strong>Date d'expiration :</strong> {{ abonnementActuel.dateExpiration | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Prix :</strong> {{ abonnementActuel.prix }} TND</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Message si aucun abonnement -->
+    <ng-template #noAbonnement>
+      <div class="no-abonnement">
+        <p>Vous n'avez pas d'abonnement actif.</p>
+        <p>Choisissez un abonnement pour commencer à publier des annonces.</p>
+      </div>
+    </ng-template>
+  
+    <!-- Section Choisir un Abonnement -->
+    <div class="choisir-abonnement">
+      <h3>Choisir un nouvel abonnement</h3>
+      <div class="abonnement-options">
+        <div *ngFor="let abonnement of abonnementsDisponibles" class="abonnement-option" [ngClass]="{ 'selected': abonnement.type === abonnementActuel?.type }">
+          <div class="abonnement-icon">
+            <i class="bi" [ngClass]="getIconForAbonnement(abonnement.type)"></i>
+          </div>
+          <h4>{{ abonnement.type }}</h4>
+          <p>{{ abonnement.nbrAnnonceAutorisees === -1 ? 'Annonces illimitées' : abonnement.nbrAnnonceAutorisees + ' annonces' }}</p>
+          <p class="prix">{{ abonnement.prix }} TND</p>
+          <button class="btn" (click)="choisirAbonnement(abonnement)">
+            {{ abonnement.type === abonnementActuel?.type ? 'Actif' : 'Sélectionner' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>

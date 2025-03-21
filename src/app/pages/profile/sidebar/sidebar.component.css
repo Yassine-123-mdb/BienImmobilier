@@ -1,6 +1,14 @@
+/* 🌟 Conteneur principal */
+.profile-container {
+  position: relative;
+  top: 70px;
+  padding: 20px;
+  margin-bottom: 100px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 🎯 Sidebar */
 .profile-sidebar {
-    
-  width: 300px;
   background: #ffffff;
   padding: 30px;
   border-radius: 15px;
@@ -109,4 +117,25 @@
 
 .btn-action:hover {
   background-color: #005a4f;
+}
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 10px;
+  }
+
+  .profile-sidebar {
+    margin-bottom: 20px;
+  }
+
+  .content-wrapper {
+    margin-left: 0;
+  }
+
+  .profile-main h2 {
+    font-size: 24px;
+  }
+
+  .profile-form {
+    padding: 20px;
+  }
 }

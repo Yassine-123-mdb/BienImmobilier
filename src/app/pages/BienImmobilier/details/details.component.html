@@ -1,79 +1,87 @@
 <app-navbar></app-navbar>
-<div class="details-container">
+<div class="container-fluid details-container">
+  <div class="row col-12">
     <!-- Section gauche : Images et détails du bien -->
-    <div class="bien-content">
+    <div class="col-xl-8 col-lg-12 col-md-12 bien-content"> <!-- 25% de largeur -->
       <h2>{{ bien.titre }}</h2>
       <p class="price">{{ bien.prix | currency:'TND' }}</p>
-  
+
       <!-- Grande image principale avec navigation -->
-      <div class="image-display">
+      <div class="image-display position-relative">
         <button class="arrow left" (click)="changerImagePrincipale(imagePrincipaleIndex - 1)">&#9665;</button>
-        <img [src]="imagePrincipale" class="main-image" alt="Image principale">
+        <img [src]="imagePrincipale" class="main-image img-fluid rounded" alt="Image principale">
         <button class="arrow right" (click)="changerImagePrincipale(imagePrincipaleIndex + 1)">&#9655;</button>
       </div>
-  
+
       <!-- Galerie de miniatures -->
-      <div class="thumbnail-gallery">
-        <img *ngFor="let img of bien.images; let i = index" [src]="img" class="thumbnail" 
+      <div class="thumbnail-gallery d-flex overflow-auto my-3">
+        <img *ngFor="let img of bien.images; let i = index" [src]="img" class="thumbnail img-thumbnail mx-1" 
              [class.active]="i === imagePrincipaleIndex" (click)="changerImagePrincipale(i)">
       </div>
-  
+
       <!-- Infos du bien -->
       <div class="bien-info">
         <p class="description">{{ bien.description }}</p>
-        <div class="features">
-          <span><i class="bi bi-house-door"></i> Type : {{ bien.type }}</span>
-          <span><i class="bi bi-geo-alt"></i> Localisation : {{ bien.localisation }}</span>
-          <span><i class="bi bi-arrows-fullscreen"></i> Surface : {{ bien.surface }} m²</span>
-          <span *ngIf="bien.chambres"><i class="bi bi-door-open"></i> Chambres : {{ bien.chambres }}</span>
-          <span *ngIf="bien.etages"><i class="bi bi-building"></i> Étages : {{ bien.etages }}</span>
+        <div class="features d-flex flex-wrap gap-2">
+          <span class="badge bg-light text-dark"><i class="bi bi-house-door"></i> Type : {{ bien.category }}</span>
+          <span class="badge bg-light text-dark"><i class="bi bi-geo-alt"></i> Adresse : {{ bien.adresse }}</span>
+          <span class="badge bg-light text-dark"><i class="bi bi-arrows-fullscreen"></i> Surface : {{ bien.surface }} m²</span>
+          <span *ngIf="bien.nombresChambres" class="badge bg-light text-dark"><i class="bi bi-door-open"></i> Chambres : {{ bien.nombresChambres }}</span>
+          <span *ngIf="bien.nombresEtages" class="badge bg-light text-dark"><i class="bi bi-building"></i> Étages : {{ bien.nombresEtages }}</span>
         </div>
-  
+
+        <div class="attributs mt-3">
+          <h4>Équipements</h4>
+          <ul class="list-unstyled">
+            <li *ngFor="let attr of attributsActifs" class="mb-2">
+              <i [class]="attr.icone"></i> {{ attr.nom }}
+            </li>
+          </ul>
+        </div>
+
         <!-- Boutons -->
-        <div class="actions">
+        <div class="actions d-flex gap-2 mt-4">
           <a [routerLink]="['/reservation', bien.id]" class="btn btn-warning">
             <i class="bi bi-calendar-check"></i> Réserver
           </a>
           <button class="btn btn-outline-danger" (click)="ajouterAuxFavoris()">❤️ Ajouter aux favoris</button>
         </div>
       </div>
-  
+
       <!-- Carte Google Maps -->
-      <div class="map-container">
+      <div class="map-container mt-4">
         <iframe width="100%" height="300" frameborder="0" [src]="safeMapUrl"></iframe>
       </div>
     </div>
-  
+
     <!-- Section droite : Propriétaire + Chat -->
-    <!-- Section Propriétaire -->
-<div class="proprietaire-info">
-  <img [src]="bien.proprietaire.photo || 'assets/default-avatar.jpg'" alt="Photo du propriétaire">
-  <h4> {{ bien.proprietaire.nom }}</h4>
-  <p><i class="bi bi-phone"></i> <a href="tel:{{ bien.proprietaire.telephone }}">{{ bien.proprietaire.telephone }}</a></p>
-  <p><i class="bi bi-envelope"></i> <a href="mailto:{{ bien.proprietaire.email }}">{{ bien.proprietaire.email }}</a></p>
-  
-  <!-- Chat Messenger -->
-  <div class="chat-box">
-    <h5>💬 Chat avec le propriétaire</h5>
+    <div class="col-xl-3 col-lg-3 col-md-12 proprietaire-info mt-lg-0 mt-4 ms-lg-4"> <!-- 75% de largeur + marge à gauche -->
+      <img [src]="bien.proprietaire.photo || 'assets/default-avatar.jpg'" class="img-fluid rounded-circle mb-3" alt="Photo du propriétaire">
+      <h4>{{ bien.proprietaire.nom }}</h4>
+      <p><i class="bi bi-phone"></i> <a href="tel:{{ bien.proprietaire.telephone }}">{{ bien.proprietaire.telephone }}</a></p>
+      <p><i class="bi bi-envelope"></i> <a href="mailto:{{ bien.proprietaire.email }}">{{ bien.proprietaire.email }}</a></p>
 
-    <!-- Zone des messages -->
-    <div class="messages">
-        <p *ngFor="let msg of messages" 
-           [class.me]="msg.sender === 'Moi'" 
-           [class.proprietaire]="msg.sender !== 'Moi'">
+      <!-- Chat Messenger -->
+      <div class="chat-box mt-4">
+        <h5>💬 Chat avec le propriétaire</h5>
+
+        <!-- Zone des messages -->
+        <div class="messages">
+          <p *ngFor="let msg of messages" 
+             [class.me]="msg.sender === 'Moi'" 
+             [class.proprietaire]="msg.sender !== 'Moi'">
             <strong>{{ msg.sender }}:</strong> {{ msg.text }}
-        </p>
+          </p>
+        </div>
+
+        <!-- Zone de saisie -->
+        <div class="chat-input-container d-flex gap-2 mt-3">
+          <input type="text" [(ngModel)]="newMessage" placeholder="Écrire un message..." class="form-control" (keyup.enter)="envoyerMessage()">
+          <button class="btn btn-primary" (click)="envoyerMessage()">📩</button>
+        </div>
+      </div>
     </div>
-
-    <!-- Zone de saisie -->
-    <div class="chat-input-container">
-        <input type="text" [(ngModel)]="newMessage" placeholder="Écrire un message..." (keyup.enter)="envoyerMessage()">
-        <button (click)="envoyerMessage()">📩</button>
-    </div>
-</div>
-
-</div>
-
   </div>
+</div>
 <app-why-choose-us></app-why-choose-us>
 <app-footer></app-footer>

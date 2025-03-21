@@ -1,164 +1,119 @@
-<section class="search-bar bg-light p-4 rounded shadow-sm">
-    <div class="container">
-        <div class="row g-2 align-items-center">
-            <!-- Mot-clé -->
-            <div class="col-md-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Mot-clé..." [(ngModel)]="keyword">
-                </div>
-            </div>
+<!-- Section Top Offers -->
+<section class="container-fluid mb-5 pb-md-4 px-3">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h2 class="h3 mb-0">Top offers</h2>
+    <a class="btn btn-link fw-normal p-0" routerLink="/catalog/rent">
+      View all <i class="fi-arrow-long-right ms-2"></i>
+    </a>
+  </div>
 
-            <!-- Catégorie (Maison, Appartement, Terrain...) -->
-            <div class="col-md-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-building"></i></span>
-                    <select class="form-select" [(ngModel)]="selectedCategory">
-                        <option value="">Catégorie</option>
-                        <option value="maison">Maison</option>
-                        <option value="appartement">Appartement</option>
-                        <option value="terrain">Terrain</option>
-                    </select>
-                </div>
-            </div>
+  <!-- Carrousel -->
+  <div class="swiper default-swiper rounded">
+    <ngx-slick-carousel [config]="config" class="slickSwiper">
+      <div *ngFor="let data of topOfferData" class="swiper-slide" ngxSlickItem>
+        <!-- Carte -->
+        <div class="card property-card position-relative" (click)="navigateToDetails(data.id)">
+          <!-- Icône Favoris -->
+          <div class="position-absolute top-0 start-0 m-2 favoris-icon">
+            <i class="bi bi-heart{{ isFavoris(data) ? '-fill' : '' }} text-danger fs-4"
+               (click)="toggleFavoris(data); $event.stopPropagation()"></i>
+          </div>
 
-            <!-- Région -->
-            <div class="col-md-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                    <select class="form-select" [(ngModel)]="selectedRegion">
-                        <option value="">Région</option>
-                        <option value="tunis">Tunis</option>
-                        <option value="sousse">Sousse</option>
-                        <option value="nabeul">Nabeul</option>
-                        <option value="sfax">Sfax</option>
-                    </select>
-                </div>
-            </div>
+          <!-- Badges -->
+          <div class="badges">
+            <span class="badge bg-success">{{ data.disponible }}</span>
+            <span class="badge" [ngClass]="data.operation === 'Vente' ? 'bg-danger' : 'bg-warning'">
+              {{ data.operation }}
+            </span>
+          </div>
 
-            <!-- Bouton Rechercher -->
-            <div class="col-md-2">
-                <button class="btn btn-primary w-100">🔍 Rechercher</button>
-            </div>
+          <!-- Image -->
+          <div class="card-img-top position-relative overflow-hidden">
+            <img [src]="data.images[0]" class="img-fluid property-image" alt="Image">
+          </div>
 
-            <!-- Bouton Filtrage avancé -->
-            <div class="col-md-1 text-center">
-                <button class="btn btn-outline-secondary" (click)="toggleFilters()">
-                    <i class="bi bi-funnel"></i>
-                </button>
+          <!-- Corps de la carte -->
+          <div class="card-body">
+            <h6 class="h6 mb-2">
+              <a class="nav-link stretched-link" routerLink="/catalog/single-v1">
+                {{ data.titre }}
+              </a>
+            </h6>
+            <p class="text-muted small text-truncate">{{ data.description }}</p>
+            <div class="price text-success fw-bold">
+              <i class="fi-cash me-2"></i> {{ data.prix | currency: 'TND' }}
             </div>
+          </div>
+
+          <!-- Bouton de réservation (visible uniquement au survol) -->
+          <div *ngIf="data.operation === 'Location'" class="card-footer bg-transparent border-0 reservation-button">
+            <button class="btn btn-primary w-100" (click)="reserver(data); $event.stopPropagation()">
+              <i class="bi bi-calendar-check me-2"></i> Réserver
+            </button>
+          </div>
+
+          <!-- Pied de carte -->
+          <div class="card-footer d-flex justify-content-between text-muted small">
+            <span><i class="bi bi-door-closed me-1"></i> {{ data.nombresChambres }} Ch</span>
+            <span><i class="bi bi-bathtub me-1"></i> {{ data.nombresSallesDeBain || 'N/A' }} SDB</span>
+            <span><i class="bi bi-car-front me-1"></i> {{ data.garage ? 'Oui' : 'Non' }}</span>
+          </div>
         </div>
-
-        <!-- Section des filtres avancés (affichée dynamiquement) -->
-        <div class="advanced-filters mt-3 p-3 rounded shadow-sm" *ngIf="showAdvancedFilters">
-            <h5>Filtres avancés pour <strong>{{ selectedCategory | titlecase }}</strong></h5>
-
-            <!-- Sélection du type d'opération (Acheter/Louer) -->
-            <div class="row g-2 mb-3">
-                <div class="col-md-12">
-                    <h6>Type d'opération</h6>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="operation" id="tous" value="tous" [(ngModel)]="selectedOperation">
-                        <label class="form-check-label" for="tous">Tous</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="operation" id="acheter" value="acheter" [(ngModel)]="selectedOperation">
-                        <label class="form-check-label" for="acheter">Acheter</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="operation" id="louer" value="louer" [(ngModel)]="selectedOperation">
-                        <label class="form-check-label" for="louer">Louer</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row g-2">
-                <!-- Filtres pour MAISON -->
-                <div *ngIf="selectedCategory === 'maison'" class="row">
-                    <div class="col-md-4">
-                        <h6>Nombre de pièces</h6>
-                        <select class="form-select" [(ngModel)]="selectedFilters.pieces">
-                            <option *ngFor="let option of nombrePieces" [value]="option">{{ option }}+</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <h6>Nombre de chambres</h6>
-                        <select class="form-select" [(ngModel)]="selectedFilters.chambres">
-                            <option *ngFor="let option of nombreChambres" [value]="option">{{ option }}+</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <h6>Nombre de salles de bain</h6>
-                        <select class="form-select" [(ngModel)]="selectedFilters.sallesDeBain">
-                            <option *ngFor="let option of nombreSallesDeBain" [value]="option">{{ option }}+</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <h6>Surface min (m²)</h6>
-                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.surface" min="50" max="300" step="50">
-                        <span>{{ selectedFilters.surface }} m²</span>
-                    </div>
-                    <div class="col-md-4">
-                        <h6>Prix max (TND)</h6>
-                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.budget" min="50000" max="500000" step="10000">
-                        <span>{{ selectedFilters.budget }} TND</span>
-                    </div>
-                    <div class="col-md-12">
-                        <h6>Equipements</h6>
-                        <div *ngFor="let equipment of equipmentOptions" class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" [value]="equipment" [(ngModel)]="selectedFilters.equipments" [checked]="isChecked(equipment)">
-                            <label class="form-check-label">{{ equipment }}</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Filtres pour APPARTEMENT -->
-                <div *ngIf="selectedCategory === 'appartement'" class="row">
-                    <div class="col-md-4">
-                        <h6>Nombre d’étages</h6>
-                        <select class="form-select" [(ngModel)]="selectedFilters.etages">
-                            <option *ngFor="let e of etages" [value]="e">{{ e }}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <h6>Nombre de pièces</h6>
-                        <select class="form-select" [(ngModel)]="selectedFilters.pieces">
-                            <option *ngFor="let option of nombrePieces" [value]="option">{{ option }}+</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <h6>Nombre de chambres</h6>
-                        <select class="form-select" [(ngModel)]="selectedFilters.chambres">
-                            <option *ngFor="let option of nombreChambres" [value]="option">{{ option }}+</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <h6>Nombre de salles de bain</h6>
-                        <select class="form-select" [(ngModel)]="selectedFilters.sallesDeBain">
-                            <option *ngFor="let option of nombreSallesDeBain" [value]="option">{{ option }}+</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <h6>Surface min (m²)</h6>
-                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.surface" min="50" max="300" step="50">
-                        <span>{{ selectedFilters.surface }} m²</span>
-                    </div>
-                </div>
-
-                <!-- Filtres pour TERRAIN -->
-                <div *ngIf="selectedCategory === 'terrain'" class="row">
-                    <div class="col-md-4">
-                        <h6>Surface du terrain (m²)</h6>
-                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.surface" min="100" max="1000" step="50">
-                        <span>{{ selectedFilters.surface }} m²</span>
-                    </div>
-                    <div class="col-md-4">
-                        <h6>Prix max (TND)</h6>
-                        <input type="range" class="form-range" [(ngModel)]="selectedFilters.budget" min="20000" max="200000" step="5000">
-                        <span>{{ selectedFilters.budget }} TND</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+      </div>
+    </ngx-slick-carousel>
+  </div>
 </section>
+
+<!-- Section Ajouté Aujourd'hui -->
+<section class="container-fluid pb-4 pt-1 mb-5">
+  <div class="d-flex align-items-end align-items-lg-center justify-content-between mb-4 pb-md-2">
+    <div class="d-flex w-100 align-items-center justify-content-between justify-content-lg-start">
+      <h2 class="h3 mb-0 me-md-4">Ajouté aujourd'hui</h2>
+      <div class="dropdown d-md-none align-items-center" data-bs-toggle="select">
+        <button class="btn btn-outline-primary btn-sm dropdown-toggle shadow-sm" type="button" data-bs-toggle="dropdown">
+          <span class="dropdown-toggle-label">Maisons</span>
+        </button>
+        <input type="hidden">
+        <div class="dropdown-menu shadow">
+          <a class="dropdown-item" href="javascript:void(0);" (click)="activeCategory('appartement')">Appartements</a>
+          <a class="dropdown-item" href="javascript:void(0);" (click)="activeCategory('maison')">Maisons</a>
+          <a class="dropdown-item" href="javascript:void(0);" (click)="activeCategory('terrain')">Terrains</a>
+        </div>
+      </div>
+      <ul class="nav nav-tabs d-none d-md-flex ps-lg-2 mb-0">
+        <li class="nav-item"><a class="nav-link fs-sm mb-2 mb-md-0" href="javascript:void(0);" (click)="activeCategory('appartement')">Appartements</a></li>
+        <li class="nav-item"><a class="nav-link fs-sm active mb-2 mb-md-0 text-primary fw-bold" href="javascript:void(0);" (click)="activeCategory('maison')">Maisons</a></li>
+        <li class="nav-item"><a class="nav-link fs-sm mb-2 mb-md-0" href="javascript:void(0);" (click)="activeCategory('terrain')">Terrains</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div *ngFor="let item of filterredImages" class="col-md-6 col-lg-6">
+      <div class="card bg-size-cover bg-position-center border-0 overflow-hidden h-100 shadow-sm rounded-3 property-card"
+        [style.backgroundImage]="'url(' + item.images[0] + ')'">
+        <span class="img-gradient-overlay"></span>
+        <div class="card-body content-overlay pb-0">
+          <div class="d-flex">
+            <span class="badge fs-sm bg-warning text-dark px-3 py-1 rounded-pill">New</span>
+          </div>
+        </div>
+        <div class="card-footer content-overlay border-0 pt-0 pb-4">
+          <div class="d-sm-flex justify-content-between align-items-end pt-5 mt-2 mt-sm-5">
+            <a class="text-decoration-none text-light pe-2" routerLink="/catalog/single-v1">
+              <div class="fs-sm text-uppercase pt-2 mb-1 text-warning">{{item.operation}}</div>
+              <h3 class="h5 text-light fw-bold mb-1">{{item.titre}}</h3>
+              <div class="fs-sm opacity-75"><i class="fi-map-pin me-1"></i>{{item.ville}}, {{item.region}}</div>
+            </a>
+            <div class="btn-group ms-n2 ms-sm-0 mt-3">
+              <a class="btn btn-primary px-3 shadow" routerLink="/catalog/single-v1" style="height: 2.75rem;"> {{item.prix}} DT</a>
+              <button class="btn btn-light btn-icon border-0 fs-sm heart-btn" type="button"><i class="bi bi-heart"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-search-country></app-search-country>

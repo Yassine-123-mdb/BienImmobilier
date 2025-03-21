@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -15,6 +15,16 @@ export class StatistiquesComponent implements OnInit {
   nbAnnoncesRestantes = 6; // Nombre d'annonces restantes
 
   ngOnInit(): void {
+    this.createCharts();
+    window.addEventListener('resize', () => this.createCharts()); // Re-créer les graphiques lors du redimensionnement
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.createCharts(); // Re-créer les graphiques lors du redimensionnement
+  }
+
+  createCharts(): void {
     this.createBarChart();
     this.createPieChart();
     this.createGaugeChart();
@@ -31,33 +41,37 @@ export class StatistiquesComponent implements OnInit {
       { mois: 'Juin', revenu: 14000 },
     ];
 
-    const margin = { top: 20, right: 30, bottom: 40, left: 40 };
-    const width = 400 - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom;
+    const container = d3.select('#bar-chart');
+    container.selectAll('*').remove(); // Nettoyer le conteneur avant de redessiner
 
-    const svg = d3
-      .select('#bar-chart')
+    // Utiliser une assertion de type pour garantir que container.node() est un Element
+    const containerNode = container.node() as Element;
+    const width = containerNode ? containerNode.getBoundingClientRect().width : 400; // Largeur dynamique
+    const height = 300;
+    const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+
+    const svg = container
       .append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+      .attr('width', width)
+      .attr('height', height)
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
     const x = d3
       .scaleBand()
       .domain(data.map((d) => d.mois))
-      .range([0, width])
+      .range([0, width - margin.left - margin.right])
       .padding(0.1);
 
     const y = d3
       .scaleLinear()
       .domain([0, d3.max(data, (d) => d.revenu) || 0])
       .nice()
-      .range([height, 0]);
+      .range([height - margin.top - margin.bottom, 0]);
 
     svg
       .append('g')
-      .attr('transform', `translate(0,${height})`)
+      .attr('transform', `translate(0,${height - margin.top - margin.bottom})`)
       .call(d3.axisBottom(x));
 
     svg.append('g').call(d3.axisLeft(y));
@@ -71,7 +85,7 @@ export class StatistiquesComponent implements OnInit {
       .attr('x', (d) => x(d.mois) || 0)
       .attr('y', (d) => y(d.revenu))
       .attr('width', x.bandwidth())
-      .attr('height', (d) => height - y(d.revenu))
+      .attr('height', (d) => height - margin.top - margin.bottom - y(d.revenu))
       .attr('fill', '#36A2EB')
       .on('mouseover', function (event, d) {
         d3.select(this).attr('fill', '#4BC0C0');
@@ -89,12 +103,16 @@ export class StatistiquesComponent implements OnInit {
       { type: 'Terrain', value: 6 },
     ];
 
-    const width = 300;
+    const container = d3.select('#pie-chart');
+    container.selectAll('*').remove(); // Nettoyer le conteneur avant de redessiner
+
+    // Utiliser une assertion de type pour garantir que container.node() est un Element
+    const containerNode = container.node() as Element;
+    const width = containerNode ? containerNode.getBoundingClientRect().width : 300; // Largeur dynamique
     const height = 300;
     const radius = Math.min(width, height) / 2;
 
-    const svg = d3
-      .select('#pie-chart')
+    const svg = container
       .append('svg')
       .attr('width', width)
       .attr('height', height)
@@ -134,12 +152,16 @@ export class StatistiquesComponent implements OnInit {
 
   // Créer un gauge chart avec une aiguille
   createGaugeChart(): void {
-    const width = 200;
+    const container = d3.select('#gauge-chart');
+    container.selectAll('*').remove(); // Nettoyer le conteneur avant de redessiner
+
+    // Utiliser une assertion de type pour garantir que container.node() est un Element
+    const containerNode = container.node() as Element;
+    const width = containerNode ? containerNode.getBoundingClientRect().width : 200; // Largeur dynamique
     const height = 200;
     const radius = Math.min(width, height) / 2;
 
-    const svg = d3
-      .select('#gauge-chart')
+    const svg = container
       .append('svg')
       .attr('width', width)
       .attr('height', height)
@@ -201,7 +223,7 @@ export class StatistiquesComponent implements OnInit {
     svg
       .append('text')
       .attr('text-anchor', 'middle')
-      .attr('dy', '0.35em')
+      .attr('dx', '-0.4em')
       .style('font-size', '24px')
       .style('fill', '#333')
       .text(`${this.nbAnnoncesRestantes}`);

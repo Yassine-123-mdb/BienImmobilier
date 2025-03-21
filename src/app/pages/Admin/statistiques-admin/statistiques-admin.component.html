@@ -1,0 +1,48 @@
+<div class="dashboard-container">
+    <h2>Tableau de Bord Administrateur</h2>
+  
+    <!-- KPI Principaux -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <i class="bi bi-people"></i>
+        <h3>Utilisateurs</h3>
+        <div class="kpi-value">{{ nombreUtilisateurs }}</div>
+      </div>
+      <div class="kpi-card">
+        <i class="bi bi-house"></i>
+        <h3>Biens</h3>
+        <div class="kpi-value">{{ nombreBiens }}</div>
+      </div>
+      <div class="kpi-card">
+        <i class="bi bi-cash"></i>
+        <h3>Revenus Mensuels</h3>
+        <div class="kpi-value">{{ revenusMensuels }} TND</div>
+      </div>
+      <div class="kpi-card">
+        <i class="bi bi-graph-up"></i>
+        <h3>Taux de Conversion</h3>
+        <div class="kpi-value">{{ tauxConversion }}%</div>
+      </div>
+    </div>
+  
+    <!-- Graphiques -->
+    <div class="charts-grid">
+      <!-- Graphique en courbes : Revenus mensuels -->
+      <div class="chart-card">
+        <h3>📈 Revenus Mensuels</h3>
+        <div id="line-chart"></div>
+      </div>
+  
+      <!-- Graphique en camembert : Répartition des biens -->
+      <div class="chart-card">
+        <h3>🏠 Répartition des Biens</h3>
+        <div id="pie-chart"></div>
+      </div>
+  
+      <!-- Graphique en barres : Réservations par mois -->
+      <div class="chart-card">
+        <h3>📅 Réservations par Mois</h3>
+        <div id="bar-chart"></div>
+      </div>
+    </div>
+  </div>
