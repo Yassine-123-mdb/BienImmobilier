@@ -2,8 +2,10 @@
 
 <section class="container row col-12 my-5">
   <h2 class="text-center mb-4 text-dark fw-bold">Réserver ce bien</h2>
+  
 
   <!-- Détails du bien -->
+  <div *ngIf="!isLoading && bien">
   <div class="bien-details col-xl-6 col-lg-6 col-md-6 mb-5">
     <h3>{{ bien.titre }}</h3>
     <p>{{ bien.description }}</p>
@@ -12,7 +14,7 @@
   </div>
 
   <!-- Formulaire de réservation -->
-  <form (ngSubmit)="onSubmit()" class="reservation-form col-xl-6 col-lg-5 col-md-4">
+  <form (ngSubmit)="reserver()" class="reservation-form col-xl-6 col-lg-5 col-md-4">
     <!-- Date de début -->
     <div class="form-group mb-3">
       <label for="dateDebut" class="form-label">Date de début</label>
@@ -21,48 +23,23 @@
         id="dateDebut"
         name="dateDebut"
         class="form-control"
-        [(ngModel)]="reservation.dateDebut"
+        [(ngModel)]="reservationDate"
         required
-        [min]="today"
-        (change)="calculerPrixTotal()"
-      />
-      <div *ngIf="dateDebutInvalide" class="text-danger">
-        La date de début doit être supérieure ou égale à aujourd'hui.
-      </div>
-    </div>
+        
+      /></div>
+      
 
-    <!-- Date de fin -->
-    <div class="form-group mb-3">
-      <label for="dateFin" class="form-label">Date de fin</label>
-      <input
-        type="date"
-        id="dateFin"
-        name="dateFin"
-        class="form-control"
-        [(ngModel)]="reservation.dateFin"
-        required
-        [min]="reservation.dateDebut"
-        (change)="calculerPrixTotal()"
-      />
-      <div *ngIf="dateFinInvalide" class="text-danger">
-        La date de fin doit être supérieure à la date de début.
-      </div>
-    </div>
+   
 
-    <!-- Résumé de la réservation -->
-    <div *ngIf="reservation.dateDebut && reservation.dateFin" class="reservation-summary mb-4">
-      <h4>Résumé de la réservation</h4>
-      <p><strong>Durée :</strong> {{ duree }} nuit(s)</p>
-      <p><strong>Prix total :</strong> {{ prixTotal }} TND</p>
-    </div>
 
     <!-- Bouton de confirmation -->
     <div class="text-center">
-      <button type="submit" class="btn btn-primary btn-lg" [disabled]="!formValide">
+      <button type="submit" class="btn btn-primary btn-lg" >
         <i class="bi bi-calendar-check"></i> Confirmer la réservation
       </button>
     </div>
   </form>
+</div>
 </section>
 
 <app-footer></app-footer>

@@ -1,0 +1,42 @@
+import { Categorie } from "./Categorie";
+import { Utilisateur } from "./Utilisateur";
+import { Image } from "./Image";
+import { Gouvernorat } from "./Gouvernorat";
+import { Commune } from "./Commune";
+import { Avis } from "./Avis";
+import { Reservation } from "./Reservation";
+
+export class BienImmobilier {
+  id?: number ;
+  titre!: string;
+  description!: string;
+  adresse!: string;
+  prix!: number;
+  disponible!: boolean;
+  typeTransaction!: string;
+  dateAjout!: Date;
+  surface!: number;
+  localisation!: string;
+  nombresChambres?: number;
+  nombresPieces?: number;
+  nombresSalledebain?: number;
+  jardin?: boolean;
+  garage?: boolean;
+  climatiseur?: boolean;
+  piscine?: boolean;
+  balcon?: boolean;
+  vueSurMer?: boolean;
+  nombresEtages?: number;
+  superficie?: number;
+  constructible?: boolean;
+  isVerifieAdmin?: boolean;
+  categorie?: Categorie;
+  proprietaire?: Utilisateur;
+  images!: Image[];
+  imageUrls?: string[];
+  gouvernorat?: Gouvernorat;
+  commune?: Commune;
+  avis?: Avis[];
+  reservations?: Reservation[];
+  utilisateursFavoris?: Utilisateur[];
+}

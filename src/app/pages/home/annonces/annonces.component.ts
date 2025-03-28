@@ -38,22 +38,22 @@ export class AnnoncesComponent implements OnInit {
   servicesData = [
     {
       image: 'assets/rent.svg',
-      title: 'Service 1',
-      content: 'Description du service 1.',
+      title: 'Louer',
+      content: 'Notre service pour la location.',
       link: '/service1',
       btn: 'En savoir plus'
     },
     {
       image: 'assets/buy.svg',
-      title: 'Service 2',
-      content: 'Description du service 2.',
+      title: 'Acheter',
+      content: "Notre service pour l'Acheté.",
       link: '/service2',
       btn: 'En savoir plus'
     },
     {
       image: 'assets/sell.svg',
-      title: 'Service 3',
-      content: 'Description du service 3.',
+      title: 'Vendre',
+      content: 'Notre service pour la Vendre.',
       link: '/service3',
       btn: 'En savoir plus'
     },

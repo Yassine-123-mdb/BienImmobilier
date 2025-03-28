@@ -7,23 +7,24 @@
       <p class="price">{{ bien.prix | currency:'TND' }}</p>
 
       <!-- Grande image principale avec navigation -->
+      <!-- Modifiez simplement les références aux images comme suit : -->
       <div class="image-display position-relative">
         <button class="arrow left" (click)="changerImagePrincipale(imagePrincipaleIndex - 1)">&#9665;</button>
         <img [src]="imagePrincipale" class="main-image img-fluid rounded" alt="Image principale">
         <button class="arrow right" (click)="changerImagePrincipale(imagePrincipaleIndex + 1)">&#9655;</button>
       </div>
 
-      <!-- Galerie de miniatures -->
+      <!-- Et la galerie de miniatures : -->
       <div class="thumbnail-gallery d-flex overflow-auto my-3">
-        <img *ngFor="let img of bien.images; let i = index" [src]="img" class="thumbnail img-thumbnail mx-1" 
-             [class.active]="i === imagePrincipaleIndex" (click)="changerImagePrincipale(i)">
+        <img *ngFor="let img of imageUrls; let i = index" [src]="img" class="thumbnail img-thumbnail mx-1" 
+            [class.active]="i === imagePrincipaleIndex" (click)="changerImagePrincipale(i)">
       </div>
 
       <!-- Infos du bien -->
       <div class="bien-info">
         <p class="description">{{ bien.description }}</p>
         <div class="features d-flex flex-wrap gap-2">
-          <span class="badge bg-light text-dark"><i class="bi bi-house-door"></i> Type : {{ bien.category }}</span>
+          <span class="badge bg-light text-dark"><i class="bi bi-house-door"></i> Type : {{ bien.categorie }}</span>
           <span class="badge bg-light text-dark"><i class="bi bi-geo-alt"></i> Adresse : {{ bien.adresse }}</span>
           <span class="badge bg-light text-dark"><i class="bi bi-arrows-fullscreen"></i> Surface : {{ bien.surface }} m²</span>
           <span *ngIf="bien.nombresChambres" class="badge bg-light text-dark"><i class="bi bi-door-open"></i> Chambres : {{ bien.nombresChambres }}</span>
@@ -56,10 +57,10 @@
 
     <!-- Section droite : Propriétaire + Chat -->
     <div class="col-xl-3 col-lg-3 col-md-12 proprietaire-info mt-lg-0 mt-4 ms-lg-4"> <!-- 75% de largeur + marge à gauche -->
-      <img [src]="bien.proprietaire.photo || 'assets/default-avatar.jpg'" class="img-fluid rounded-circle mb-3" alt="Photo du propriétaire">
-      <h4>{{ bien.proprietaire.nom }}</h4>
-      <p><i class="bi bi-phone"></i> <a href="tel:{{ bien.proprietaire.telephone }}">{{ bien.proprietaire.telephone }}</a></p>
-      <p><i class="bi bi-envelope"></i> <a href="mailto:{{ bien.proprietaire.email }}">{{ bien.proprietaire.email }}</a></p>
+      <img [src]=" 'assets/yassine.jpg'" class="img-fluid rounded-circle mb-3" alt="Photo du propriétaire">
+      <h4></h4>
+      <p><i class="bi bi-phone"></i> <a href="tel:21103925">21103925</a></p>
+      <p><i class="bi bi-envelope"></i>  <a href="mailto: yassinmeddeb564@gmail.com">yassinmeddeb564&#64;gmail.com </a></p>
 
       <!-- Chat Messenger -->
       <div class="chat-box mt-4">

@@ -1,86 +1,52 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BienImmobilier } from '../../../models/BienImmobilier';
+import { AnnonceService } from '../../../services/AnnonceService.service';
 
 @Component({
   selector: 'app-reservation',
   templateUrl: './reservation.component.html',
-  styleUrls: ['./reservation.component.css'],
+  styleUrls: ['./reservation.component.css']
 })
 export class ReservationComponent implements OnInit {
-  // Objet pour stocker les données de réservation
-  reservation = {
-    dateDebut: '',
-    dateFin: '',
-  };
-
-  // Détails du bien
-  bien = {
-    id: '1',
-    titre: 'Appartement moderne',
-    description: 'Un appartement spacieux et lumineux en plein centre-ville.',
-    prix: 1000,
-    localisation: 'Tunis, Avenue Habib Bourguiba',
-  };
-
-  // Variables pour le calcul du prix total
-  duree: number = 0;
-  prixTotal: number = 0;
-
-  // Variables de validation
-  dateDebutInvalide: boolean = false;
-  dateFinInvalide: boolean = false;
-  formValide: boolean = false;
-
-  // Date d'aujourd'hui pour la validation
-  today: string = new Date().toISOString().split('T')[0];
+  bien= new BienImmobilier ();
+  isLoading: boolean = true;
+  reservationDate: string = '';
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private router: Router,
+    private annonceService: AnnonceService
   ) {}
 
   ngOnInit(): void {
-    // Récupérer l'ID du bien depuis l'URL
     const bienId = this.route.snapshot.paramMap.get('id');
     if (bienId) {
-      // Charger les détails du bien (simulation)
-      this.bien.id = bienId;
+      this.loadBien(parseInt(bienId));
     }
   }
 
-  // Calculer la durée et le prix total
-  calculerPrixTotal(): void {
-    if (this.reservation.dateDebut && this.reservation.dateFin) {
-      const dateDebut = new Date(this.reservation.dateDebut);
-      const dateFin = new Date(this.reservation.dateFin);
-
-      // Validation des dates
-      this.dateDebutInvalide = dateDebut < new Date(this.today);
-      this.dateFinInvalide = dateFin <= dateDebut;
-
-      if (!this.dateDebutInvalide && !this.dateFinInvalide) {
-        const diffTime = dateFin.getTime() - dateDebut.getTime();
-        this.duree = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        this.prixTotal = this.duree * this.bien.prix;
-        this.formValide = true;
-      } else {
-        this.formValide = false;
+  loadBien(id: number): void {
+    this.annonceService.getAnnonceById(id).subscribe({
+      next: (data) => {
+        this.bien = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement du bien:', err);
+        this.isLoading = false;
       }
-    } else {
-      this.formValide = false;
-    }
+    });
   }
 
-  // Soumission du formulaire
-  onSubmit(): void {
-    if (this.formValide) {
-      console.log('Réservation :', this.reservation);
-      this.toastr.success('Réservation confirmée avec succès !', 'Succès');
-      this.router.navigate(['/details-bien', this.bien.id]);
-    } else {
-      this.toastr.error('Veuillez vérifier les dates saisies.', 'Erreur');
+  reserver(): void {
+    if (!this.reservationDate) {
+      alert('Veuillez choisir une date de réservation.');
+      return;
     }
+
+    console.log('Réservation confirmée pour:', this.bien?.titre, 'à la date:', this.reservationDate);
+    alert(`Votre réservation pour ${this.bien?.titre} a été confirmée pour le ${this.reservationDate}`);
+    this.router.navigate(['/']);
   }
 }

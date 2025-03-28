@@ -49,8 +49,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { SearchCountryComponent } from './pages/home/search-country/search-country.component';
 import { CatalogueComponent } from './pages/catalogue/catalogue.component';
-import { GoogleMapsModule } from '@angular/google-maps';
-
 
 
 @NgModule({
@@ -89,7 +87,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
     PaiementsAdminComponent,
     GestionAnnoncesComponent,
     SearchCountryComponent,
-    CatalogueComponent
+    CatalogueComponent,
+    
     ],
   imports: [
     BrowserModule,
@@ -97,13 +96,13 @@ import { GoogleMapsModule } from '@angular/google-maps';
     MatToolbarModule,
     MatButtonModule,
     FormsModule,
-    BrowserAnimationsModule, // Ajoutez ce module
+    BrowserAnimationsModule, 
     ToastrModule.forRoot(),
     MatCardModule,
     FontAwesomeModule,
     HttpClientModule,
     SlickCarouselModule,
-    GoogleMapsModule
+    
   ],
   providers: [
     provideAnimationsAsync()

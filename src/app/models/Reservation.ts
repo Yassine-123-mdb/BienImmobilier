@@ -1,28 +1,32 @@
 export class Reservation {
-    id: string;
-    titre: string;
-    dateDebut: string;
-    dateFin: string;
-    statut: 'Confirmée' | 'En attente' | 'Rejetée';
-    localisation: string;
-    bienId: string;
-  
-    constructor(
-      id: string,
-      titre: string,
-      dateDebut: string,
-      dateFin: string,
-      statut: 'Confirmée' | 'En attente' | 'Rejetée',
-      localisation: string,
-      bienId: string
-    ) {
-      this.id = id;
-      this.titre = titre;
-      this.dateDebut = dateDebut;
-      this.dateFin = dateFin;
-      this.statut = statut;
-      this.localisation = localisation;
-      this.bienId = bienId;
-    }
+  id?: number; 
+  bienId: number;
+  utilisateurId: number; 
+  titre: string;
+  dateDebut: Date; 
+  adress:string;
+  dateFin: Date; 
+  prixTotal: number; 
+  statut: 'En attente' | 'Confirme' | 'Annule' = 'En attente';
+  commentaire?: string; 
+
+  constructor(
+    bienId: number,
+    titre: string,
+    utilisateurId: number,
+    dateDebut: Date,
+    adress: string,
+    dateFin: Date,
+    prixTotal: number,
+    commentaire?: string
+  ) {
+    this.bienId = bienId;
+    this.utilisateurId = utilisateurId;
+    this.dateDebut = dateDebut;
+    this.adress = adress;
+    this.titre = titre;
+    this.dateFin = dateFin;
+    this.prixTotal = prixTotal;
+    this.commentaire = commentaire;
   }
-  
+}

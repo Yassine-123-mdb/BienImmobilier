@@ -1,419 +1,131 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Annonce } from '../../../models/Annonce';
+import { BienImmobilier } from '../../../models/BienImmobilier';
+import { AnnonceService } from '../../../services/AnnonceService.service';
+import { ImageService } from '../../../services/image-service.service';
 
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.css']
 })
-export class SearchBarComponent {
-  OnInit(): void {  
-    this.activeCategory('maison')
-  }
-  constructor(private router: Router) {}
-  
-  
+export class SearchBarComponent implements OnInit {
   config = {
-    slidesToShow: 4, // Afficher 4 cartes par ligne
+    slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
     dots: true,
     arrows: true,
+    draggable: false,
+    swipe: false,
     responsive: [
       {
-        breakpoint: 1200, // Pour les écrans moyens
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1
-        }
+        breakpoint: 1200,
+        settings: { slidesToShow: 3, slidesToScroll: 1, draggable: false, swipe: false }
       },
       {
-        breakpoint: 768, // Pour les tablettes
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
+        breakpoint: 768,
+        settings: { slidesToShow: 1, slidesToScroll: 1, draggable: false, swipe: false }
       },
       {
-        breakpoint: 480, // Pour les mobiles
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
+        breakpoint: 480,
+        settings: { slidesToShow: 1, slidesToScroll: 1, draggable: false, swipe: false }
       }
     ]
   };
- 
-  galleryFilter = 'maison';
-  filterredImages: Annonce[] = [];
-
-  list: Annonce[] = [
-    {
-      id: 1,
-      titre: 'Villa de luxe à louer',
-      description: 'Belle villa avec jardin et piscine.',
-      region: 'Île-de-France',
-      ville: 'Paris',
-      adresse: '118-11 Sutphin Blvd, Jamaica, NY 11434',
-      prix: 3850,
-      category: 'maison',
-      disponible: 'Disponible',
-      operation: 'Location',
-      dateAjout: new Date(),
-      images: ['assets/appart2.jpg'],
-      localisation: '118-11 Sutphin Blvd, Jamaica, NY 11434',
-      surface: 250,
-      mapUrl: 'https://www.google.com/maps?q=118-11+Sutphin+Blvd',
-      statutAdmin: 'Validée',
-      nombresChambres: 4,
-      nombresSallesDeBain: 3,
-      jardin: true,
-      garage: true,
-      chauffage: true,
-      proprietaire: {
-        nom: 'John Doe',
-        telephone: '0123456789',
-        email: 'john.doe@example.com',
-      },
-    },
-    {
-      id: 2,
-      titre: 'Duplex avec garage à vendre',
-      description: 'Magnifique duplex avec garage.',
-      region: 'New York',
-      ville: 'Kings Park',
-      adresse: '21 Pulaski Road, Kings Park, NY 11754',
-      prix: 200410,
-      category: 'maison',
-      disponible: 'Disponible',
-      operation: 'Vente',
-      dateAjout: new Date(),
-      images: ['assets/appart3.jpg'],
-      localisation: '21 Pulaski Road, Kings Park, NY 11754',
-      surface: 180,
-      mapUrl: 'https://www.google.com/maps?q=21+Pulaski+Road',
-      statutAdmin: 'Validée',
-      nombresChambres: 3,
-      nombresSallesDeBain: 2,
-      garage: true,
-      proprietaire: {
-        nom: 'Jane Smith',
-        telephone: '0987654321',
-        email: 'jane.smith@example.com',
-      },
-    },
-    {
-      id: 1,
-      titre: 'Appartement à La Marsa',
-      description: 'Magnifique appartement avec vue sur mer.',
-      prix: 350000,
-      images: ['assets/appart3.jpg'],
-      category: 'appartement',
-      region: 'tunis',
-      ville: 'La Marsa',
-      adresse: 'Rue de la Mer',
-      disponible: 'Disponible',
-      operation: 'Vente',
-      dateAjout: new Date(),
-      localisation: '36.8065,10.1815',
-      surface: 120,
-      nombresPieces: 3,
-      nombresChambres: 2,
-      nombresEtages: 2,
-      climatiseur: true,
-      jardin: false,
-      garage: true,
-      chauffage: true,
-      balcon: true,
-      mapUrl: '',
-      vueSurMer: true,
-      statutAdmin: 'En attente',
-      proprietaire: {
-        nom: 'John Doe',
-        photo: 'assets/john.jpg',
-        telephone: '+216 98 123 456',
-        email: 'john.doe@example.com'
-      }
-    },
-    {
-      id: 2,
-      titre: 'Villa à Hammamet',
-      description: 'Villa luxueuse avec piscine.',
-      prix: 850000,
-      images: ['assets/villa1.jfif'],
-      category: 'maison',
-      region: 'nabeul',
-      ville: 'Hammamet',
-      adresse: 'Rue des Palmiers',
-      disponible: 'Non Disponible',
-      operation: 'Location',
-      dateAjout: new Date(),
-      localisation: '36.4000,10.6167',
-      mapUrl: '',
-      surface: 300,
-      nombresPieces: 5,
-      nombresChambres: 4,
-      nombresSallesDeBain: 3,
-      climatiseur: true,
-      jardin: true,
-      garage: true,
-      chauffage: false,
-      balcon: false,
-      vueSurMer: false,
-      statutAdmin: 'En attente',
-      proprietaire: {
-        nom: 'Jane Smith',
-        photo: 'assets/jane.jpg',
-        telephone: '+216 98 654 321',
-        email: 'jane.smith@example.com'
-      }
-    },
-    
-  ];
-
-  // Filtre les annonces en fonction de la catégorie sélectionnée
-  activeCategory(category: string) {
-    this.galleryFilter = category;
-    this.filterredImages = this.topOfferData.filter(x => x.category === this.galleryFilter);
-  }
-
-
-  // Données des annonces
-  topOfferData:Annonce[] = [
-    {
-      id: 1,
-      titre: 'Appartement à La Marsa',
-      description: 'Magnifique appartement avec vue sur mer.',
-      prix: 350000,
-      images: ['assets/appart5.jpg'],
-      category: 'appartement',
-      region: 'tunis',
-      ville: 'La Marsa',
-      adresse: 'Rue de la Mer',
-      disponible: 'Disponible',
-      operation: 'Vente',
-      dateAjout: new Date(),
-      localisation: '36.8065,10.1815',
-      surface: 120,
-      nombresPieces: 3,
-      nombresChambres: 2,
-      nombresEtages: 2,
-      climatiseur: true,
-      jardin: false,
-      garage: true,
-      chauffage: true,
-      balcon: true,
-      mapUrl: '',
-      vueSurMer: true,
-      statutAdmin: 'En attente',
-      proprietaire: {
-        nom: 'John Doe',
-        photo: 'assets/john.jpg',
-        telephone: '+216 98 123 456',
-        email: 'john.doe@example.com'
-      }
-    },
-    {
-      id: 2,
-      titre: 'Villa à Hammamet',
-      description: 'Villa luxueuse avec piscine.',
-      prix: 850000,
-      images: ['assets/villa1.jfif'],
-      category: 'maison',
-      region: 'nabeul',
-      ville: 'Hammamet',
-      adresse: 'Rue des Palmiers',
-      disponible: 'Non Disponible',
-      operation: 'Location',
-      dateAjout: new Date(),
-      localisation: '36.4000,10.6167',
-      mapUrl: '',
-      surface: 300,
-      nombresPieces: 5,
-      nombresChambres: 4,
-      nombresSallesDeBain: 3,
-      climatiseur: true,
-      jardin: true,
-      garage: true,
-      chauffage: false,
-      balcon: false,
-      vueSurMer: false,
-      statutAdmin: 'En attente',
-      proprietaire: {
-        nom: 'Jane Smith',
-        photo: 'assets/jane.jpg',
-        telephone: '+216 98 654 321',
-        email: 'jane.smith@example.com'
-      }
-    },
-    {
-      id: 1,
-      titre: 'Appartement à La Marsa',
-      description: 'Magnifique appartement avec vue sur mer.',
-      prix: 350000,
-      images: ['assets/appartement1.jfif'],
-      category: 'appartement',
-      region: 'tunis',
-      ville: 'La Marsa',
-      adresse: 'Rue de la Mer',
-      disponible: 'Disponible',
-      operation: 'Vente',
-      dateAjout: new Date(),
-      localisation: '36.8065,10.1815',
-      surface: 120,
-      nombresPieces: 3,
-      nombresChambres: 2,
-      nombresEtages: 2,
-      climatiseur: true,
-      jardin: false,
-      garage: true,
-      chauffage: true,
-      balcon: true,
-      mapUrl: '',
-      vueSurMer: true,
-      statutAdmin: 'En attente',
-      proprietaire: {
-        nom: 'John Doe',
-        photo: 'assets/john.jpg',
-        telephone: '+216 98 123 456',
-        email: 'john.doe@example.com'
-      }
-    },
-    {
-      id: 2,
-      titre: 'Villa à Hammamet',
-      description: 'Villa luxueuse avec piscine.',
-      prix: 850000,
-      images: ['assets/villa1.jfif'],
-      category: 'maison',
-      region: 'nabeul',
-      ville: 'Hammamet',
-      adresse: 'Rue des Palmiers',
-      disponible: 'Non Disponible',
-      operation: 'Location',
-      dateAjout: new Date(),
-      localisation: '36.4000,10.6167',
-      mapUrl: '',
-      surface: 300,
-      nombresPieces: 5,
-      nombresChambres: 4,
-      nombresSallesDeBain: 3,
-      climatiseur: true,
-      jardin: true,
-      garage: true,
-      chauffage: false,
-      balcon: false,
-      vueSurMer: false,
-      statutAdmin: 'En attente',
-      proprietaire: {
-        nom: 'Jane Smith',
-        photo: 'assets/jane.jpg',
-        telephone: '+216 98 654 321',
-        email: 'jane.smith@example.com'
-      }
-    },
-    {
-      id: 2,
-      titre: 'Villa à Hammamet',
-      description: 'Villa luxueuse avec piscine.',
-      prix: 850000,
-      images: ['assets/villa1.jfif'],
-      category: 'maison',
-      region: 'nabeul',
-      ville: 'Hammamet',
-      adresse: 'Rue des Palmiers',
-      disponible: 'Non Disponible',
-      operation: 'Location',
-      dateAjout: new Date(),
-      localisation: '36.4000,10.6167',
-      mapUrl: '',
-      surface: 300,
-      nombresPieces: 5,
-      nombresChambres: 4,
-      nombresSallesDeBain: 3,
-      climatiseur: true,
-      jardin: true,
-      garage: true,
-      chauffage: false,
-      balcon: false,
-      vueSurMer: false,
-      statutAdmin: 'En attente',
-      proprietaire: {
-        nom: 'Jane Smith',
-        photo: 'assets/jane.jpg',
-        telephone: '+216 98 654 321',
-        email: 'jane.smith@example.com'
-      }
-    },
-    {
-      id: 2,
-      titre: 'Villa à Hammamet',
-      description: 'Villa luxueuse avec piscine.',
-      prix: 850000,
-      images: ['assets/appart2.jpg'],
-      category: 'maison',
-      region: 'nabeul',
-      ville: 'Hammamet',
-      adresse: 'Rue des Palmiers',
-      disponible: 'Non Disponible',
-      operation: 'Location',
-      dateAjout: new Date(),
-      localisation: '36.4000,10.6167',
-      mapUrl: '',
-      surface: 300,
-      nombresPieces: 5,
-      nombresChambres: 4,
-      nombresSallesDeBain: 3,
-      climatiseur: true,
-      jardin: true,
-      garage: true,
-      chauffage: false,
-      balcon: false,
-      vueSurMer: false,
-      statutAdmin: 'En attente',
-      proprietaire: {
-        nom: 'Jane Smith',
-        photo: 'assets/jane.jpg',
-        telephone: '+216 98 654 321',
-        email: 'jane.smith@example.com'
-      }
-    },
-    // Ajoutez d'autres annonces ici
-  ];
   
-  navigateToDetails(id: number) {
-    this.router.navigate(['/details-bien', id]);
+  galleryFilter = 'MAISON';
+  filterredImages: BienImmobilier[] = [];
+  topOfferData: BienImmobilier[] = [];
+  isLoading = true;
+
+  constructor(
+    private router: Router,
+    private annonceService: AnnonceService,
+    private imageService: ImageService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadTopOffers();
+    this.loadTodayAdded();
   }
-  toggleFavori(offre: any, event: Event) {
-    event.stopPropagation();
-    offre.favori = !offre.favori;
+
+  
+
+  loadTopOffers(): void {
+    this.annonceService.getTopOffers().subscribe({
+      next: (data) => {
+        console.log(data);
+        this.topOfferData = data;
+        this.isLoading = false;
+        
+        // Charger les images pour chaque bien
+        this.topOfferData.forEach(bien => {
+          if (bien.id) {
+            this.imageService.loadImages(bien.id).subscribe(images => {
+              bien.images = images;
+              bien.imageUrls = images.map(img => this.imageService.getImageUrl(img.idImage!));
+            });
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error loading top offers:', err);
+        this.isLoading = false;
+      }
+    });
   }
-  avigateToDetails(id: number) {
+
+  loadTodayAdded(): void {
+    this.annonceService.getTodayAdded().subscribe({
+      next: (data) => {
+        console.log("today",data);
+        this.filterredImages = data;
+        this.isLoading = false;
+        
+        // Charger les images pour chaque bien
+        this.filterredImages.forEach(bien => {
+          if (bien.id) {
+            this.imageService.loadImages(bien.id).subscribe(images => {
+              bien.images = images;
+              bien.imageUrls = images.map(img => this.imageService.getImageUrl(img.idImage!));
+            });
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error loading top offers:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  navigateToDetails(id: number): void {
     this.router.navigate(['/details-bien', id]);
   }
 
-  toggleFavoris(annonce: Annonce) {
-    const favoris: Annonce[] = JSON.parse(localStorage.getItem('favoris') || '[]');
+  toggleFavoris(annonce: BienImmobilier, event: Event): void {
+    event.stopPropagation();
+    const favoris: BienImmobilier[] = JSON.parse(localStorage.getItem('favoris') || '[]');
     const index = favoris.findIndex(f => f.id === annonce.id);
 
     if (index === -1) {
-      favoris.push(annonce);  // Ajouter l'annonce aux favoris
+      favoris.push(annonce);
     } else {
-      favoris.splice(index, 1);  // Retirer l'annonce des favoris
+      favoris.splice(index, 1);
     }
 
-    localStorage.setItem('favoris', JSON.stringify(favoris));  // Sauvegarder dans localStorage
+    localStorage.setItem('favoris', JSON.stringify(favoris));
   }
 
-  // Vérifier si une annonce est dans les favoris
-  isFavoris(annonce: Annonce): boolean {
-    const favoris: Annonce[] = JSON.parse(localStorage.getItem('favoris') || '[]');
+  isFavoris(annonce: BienImmobilier): boolean {
+    const favoris: BienImmobilier[] = JSON.parse(localStorage.getItem('favoris') || '[]');
     return favoris.some(f => f.id === annonce.id);
   }
-  reserver(annonce: Annonce) {
-    alert(`Réservation de l'annonce : ${annonce.titre}`);
-  }
 
+  reserver(id: number, event: Event): void {
+    event.stopPropagation();
+    this.router.navigate(['/reservation', id]);
+  }
 }

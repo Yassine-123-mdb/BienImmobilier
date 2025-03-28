@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Reservation } from '../../../models/Reservation'; // Vous devrez créer ce modèle
+import { Reservation } from '../../../models/Reservation';
 
 @Component({
   selector: 'app-reservations',
@@ -9,11 +9,7 @@ import { Reservation } from '../../../models/Reservation'; // Vous devrez créer
   styleUrls: ['./reservation.component.css'],
 })
 export class ListeReservationComponent implements OnInit {
-  public reservations: Reservation[] = [
-    new Reservation('1', 'Réservation Maison', '2025-02-20', '2025-02-22', 'Confirmée', 'Tunis, La Marsa', 'bien1'),
-    new Reservation('2', 'Réservation Appartement', '2025-02-25', '2025-02-28', 'En attente', 'Tunis, Sidi Bou Said', 'bien2'),
-    new Reservation('3', 'Réservation Villa', '2025-03-01', '2025-03-05', 'Rejetée', 'Tunis, Carthage', 'bien3')
-  ]; // Liste des réservations
+  public reservations: Reservation[] = [];
 
   constructor(private router: Router, private toastr: ToastrService) {}
 
@@ -21,24 +17,54 @@ export class ListeReservationComponent implements OnInit {
     this.chargerReservations();
   }
 
+  /** Charge les réservations depuis le localStorage ou initialise des données de test */
   chargerReservations(): void {
     const reservationsData = localStorage.getItem('reservations');
-    if (reservationsData) {
+   /*  if (reservationsData) {
       this.reservations = JSON.parse(reservationsData);
-    }
+    } else {
+      this.reservations = [
+        {
+          id: 1,
+          titre: 'Réservation Maison',
+          dateDebut: new Date('2025-02-20'),
+          dateFin: new Date('2025-02-22'),
+          statut: 'Confirme',
+          adress: 'Tunis, Centre-ville',
+id        },
+        {
+          id: 2,
+          titre: 'Réservation Appartement',
+          dateDebut: new Date('2025-02-25'),
+          dateFin: new Date('2025-02-28'),
+          statut: 'En attente',
+          localisation: 'Sidi Bou Said, Tunis',
+          locataire: {} as any,
+          bienImmobilier: {} as any,
+        },
+        {
+          id: 3,
+          titre: 'Réservation Villa',
+          dateDebut: new Date('2025-03-01'),
+          dateFin: new Date('2025-03-05'),
+          statut: 'Annule',
+          localisation: 'La Marsa, Tunis',
+          locataire: {} as any, 
+        }
+      ];
+      localStorage.setItem('reservations', JSON.stringify(this.reservations));
+    } */
   }
 
-  // Voir les détails de la réservation
-  voirDetails(bienId: string): void {
+  /** Redirige vers les détails d'un bien immobilier */
+  voirDetails(bienId: number): void {
     this.router.navigate(['details-bien', bienId]);
   }
 
-  // Annuler une réservation
-  annuler(reservationId: string): void {
-    this.reservations = this.reservations.filter(
-      (reservation) => reservation.id !== reservationId
-    );
+  /** Annule une réservation et met à jour le localStorage */
+  annuler(reservationId: number): void {
+    this.reservations = this.reservations.filter((reservation) => reservation.id !== reservationId);
     localStorage.setItem('reservations', JSON.stringify(this.reservations));
-    this.toastr.success('Réservation annulée', 'Succès');
+    this.toastr.success('Réservation annulée avec succès', 'Succès');
   }
 }

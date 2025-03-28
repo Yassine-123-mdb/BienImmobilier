@@ -12,32 +12,31 @@
     <ngx-slick-carousel [config]="config" class="slickSwiper">
       <div *ngFor="let data of topOfferData" class="swiper-slide" ngxSlickItem>
         <!-- Carte -->
-        <div class="card property-card position-relative" (click)="navigateToDetails(data.id)">
+        <div class="card property-card position-relative" (click)="navigateToDetails(data.id!)">
           <!-- Icône Favoris -->
-          <div class="position-absolute top-0 start-0 m-2 favoris-icon">
-            <i class="bi bi-heart{{ isFavoris(data) ? '-fill' : '' }} text-danger fs-4"
-               (click)="toggleFavoris(data); $event.stopPropagation()"></i>
+          <div class="position-absolute top-0 start-0 m-2 favoris-icon" (click)="toggleFavoris(data, $event)">
+            <i class="bi bi-heart{{ isFavoris(data) ? '-fill' : '' }} text-danger fs-4"></i>
           </div>
 
           <!-- Badges -->
           <div class="badges">
-            <span class="badge bg-success">{{ data.disponible }}</span>
-            <span class="badge" [ngClass]="data.operation === 'Vente' ? 'bg-danger' : 'bg-warning'">
-              {{ data.operation }}
+            <span class="badge bg-success">{{ data.disponible ? 'Disponible' : 'Indisponible' }}</span>
+            <span class="badge" [ngClass]="data.typeTransaction === 'VENTE' ? 'bg-danger' : 'bg-warning'">
+              {{ data.typeTransaction }}
             </span>
           </div>
 
           <!-- Image -->
           <div class="card-img-top position-relative overflow-hidden">
-            <img [src]="data.images[0]" class="img-fluid property-image" alt="Image">
+            <img [src]="data.imageUrls?.[0] || 'assets/appart3.jpg'" 
+                 class="img-fluid property-image" 
+                 alt="{{data.titre}}">
           </div>
 
           <!-- Corps de la carte -->
           <div class="card-body">
             <h6 class="h6 mb-2">
-              <a class="nav-link stretched-link" routerLink="/catalog/single-v1">
-                {{ data.titre }}
-              </a>
+              {{ data.titre }}
             </h6>
             <p class="text-muted small text-truncate">{{ data.description }}</p>
             <div class="price text-success fw-bold">
@@ -45,9 +44,11 @@
             </div>
           </div>
 
-          <!-- Bouton de réservation (visible uniquement au survol) -->
-          <div *ngIf="data.operation === 'Location'" class="card-footer bg-transparent border-0 reservation-button">
-            <button class="btn btn-primary w-100" (click)="reserver(data); $event.stopPropagation()">
+          <!-- Bouton de réservation -->
+          <div *ngIf="data.typeTransaction === 'LOCATION'" 
+               class="card-footer bg-transparent border-0 reservation-button"
+               (click)="reserver(data.id!, $event)">
+            <button class="btn btn-primary w-100">
               <i class="bi bi-calendar-check me-2"></i> Réserver
             </button>
           </div>
@@ -55,7 +56,7 @@
           <!-- Pied de carte -->
           <div class="card-footer d-flex justify-content-between text-muted small">
             <span><i class="bi bi-door-closed me-1"></i> {{ data.nombresChambres }} Ch</span>
-            <span><i class="bi bi-bathtub me-1"></i> {{ data.nombresSallesDeBain || 'N/A' }} SDB</span>
+            <span><i class="bi bi-bathtub me-1"></i> {{ data.nombresSalledebain }} SDB</span>
             <span><i class="bi bi-car-front me-1"></i> {{ data.garage ? 'Oui' : 'Non' }}</span>
           </div>
         </div>
@@ -69,45 +70,42 @@
   <div class="d-flex align-items-end align-items-lg-center justify-content-between mb-4 pb-md-2">
     <div class="d-flex w-100 align-items-center justify-content-between justify-content-lg-start">
       <h2 class="h3 mb-0 me-md-4">Ajouté aujourd'hui</h2>
-      <div class="dropdown d-md-none align-items-center" data-bs-toggle="select">
-        <button class="btn btn-outline-primary btn-sm dropdown-toggle shadow-sm" type="button" data-bs-toggle="dropdown">
-          <span class="dropdown-toggle-label">Maisons</span>
-        </button>
-        <input type="hidden">
-        <div class="dropdown-menu shadow">
-          <a class="dropdown-item" href="javascript:void(0);" (click)="activeCategory('appartement')">Appartements</a>
-          <a class="dropdown-item" href="javascript:void(0);" (click)="activeCategory('maison')">Maisons</a>
-          <a class="dropdown-item" href="javascript:void(0);" (click)="activeCategory('terrain')">Terrains</a>
-        </div>
-      </div>
-      <ul class="nav nav-tabs d-none d-md-flex ps-lg-2 mb-0">
-        <li class="nav-item"><a class="nav-link fs-sm mb-2 mb-md-0" href="javascript:void(0);" (click)="activeCategory('appartement')">Appartements</a></li>
-        <li class="nav-item"><a class="nav-link fs-sm active mb-2 mb-md-0 text-primary fw-bold" href="javascript:void(0);" (click)="activeCategory('maison')">Maisons</a></li>
-        <li class="nav-item"><a class="nav-link fs-sm mb-2 mb-md-0" href="javascript:void(0);" (click)="activeCategory('terrain')">Terrains</a></li>
-      </ul>
+      
+     
     </div>
   </div>
 
   <div class="row g-4">
     <div *ngFor="let item of filterredImages" class="col-md-6 col-lg-6">
       <div class="card bg-size-cover bg-position-center border-0 overflow-hidden h-100 shadow-sm rounded-3 property-card"
-        [style.backgroundImage]="'url(' + item.images[0] + ')'">
+           (click)="navigateToDetails(item.id!)"
+           [style.backgroundImage]="'url(' + (item.imageUrls?.[0] || 'assets/appart1.jpg') + ')'">
         <span class="img-gradient-overlay"></span>
         <div class="card-body content-overlay pb-0">
           <div class="d-flex">
             <span class="badge fs-sm bg-warning text-dark px-3 py-1 rounded-pill">New</span>
+            <div class="position-absolute top-0 start-0 m-2 favoris-icon" (click)="toggleFavoris(item, $event)">
+              <i class="bi bi-heart{{ isFavoris(item) ? '-fill' : '' }} text-danger fs-4"></i>
+            </div>
           </div>
         </div>
         <div class="card-footer content-overlay border-0 pt-0 pb-4">
           <div class="d-sm-flex justify-content-between align-items-end pt-5 mt-2 mt-sm-5">
-            <a class="text-decoration-none text-light pe-2" routerLink="/catalog/single-v1">
-              <div class="fs-sm text-uppercase pt-2 mb-1 text-warning">{{item.operation}}</div>
+            <div class="text-decoration-none text-light pe-2">
+              <div class="fs-sm text-uppercase pt-2 mb-1 text-warning">{{item.typeTransaction}}</div>
               <h3 class="h5 text-light fw-bold mb-1">{{item.titre}}</h3>
-              <div class="fs-sm opacity-75"><i class="fi-map-pin me-1"></i>{{item.ville}}, {{item.region}}</div>
-            </a>
+              <div class="fs-sm opacity-75"><i class="fi-map-pin me-1"></i></div>
+            </div>
             <div class="btn-group ms-n2 ms-sm-0 mt-3">
-              <a class="btn btn-primary px-3 shadow" routerLink="/catalog/single-v1" style="height: 2.75rem;"> {{item.prix}} DT</a>
-              <button class="btn btn-light btn-icon border-0 fs-sm heart-btn" type="button"><i class="bi bi-heart"></i></button>
+              <button *ngIf="item.typeTransaction === 'LOCATION'" 
+                      class="btn btn-primary px-3 shadow" 
+                      style="height: 2.75rem;"
+                      (click)="reserver(item.id!, $event)">
+                Réserver
+              </button>
+              <button class="btn btn-light btn-icon border-0 fs-sm heart-btn" type="button">
+                <i class="bi bi-heart"></i>
+              </button>
             </div>
           </div>
         </div>
