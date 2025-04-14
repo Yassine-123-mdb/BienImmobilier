@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
@@ -49,7 +49,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { SearchCountryComponent } from './pages/home/search-country/search-country.component';
 import { CatalogueComponent } from './pages/catalogue/catalogue.component';
-
+import { ForbiddenComponent } from './pages/errors/forbidden/forbidden.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './Interceptors/auth.interceptor';
+import { ErrorInterceptor } from './Interceptors/erreur.interceptor';
+import { DpDatePickerModule } from 'ng2-date-picker';
+import { ResetPasswordComponent } from './pages/connexion/reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './pages/connexion/forgot-password/forgot-password.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -88,6 +95,9 @@ import { CatalogueComponent } from './pages/catalogue/catalogue.component';
     GestionAnnoncesComponent,
     SearchCountryComponent,
     CatalogueComponent,
+    ForbiddenComponent,
+    ResetPasswordComponent,
+    ForgotPasswordComponent,
     
     ],
   imports: [
@@ -102,10 +112,22 @@ import { CatalogueComponent } from './pages/catalogue/catalogue.component';
     FontAwesomeModule,
     HttpClientModule,
     SlickCarouselModule,
+    DpDatePickerModule,
+    ReactiveFormsModule
     
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
-    provideAnimationsAsync()
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,  // AuthInterceptor pour ajouter le token
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,  // ErrorInterceptor pour capturer les erreurs
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

@@ -1,14 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-
-interface Reservation {
-  id: number;
-  bien: { titre: string };
-  client: { nom: string };
-  dateDebut: Date;
-  dateFin: Date;
-  prix: number;
-  statut: 'en_attente' | 'termine' | 'annule';
-}
+import { ReservationService } from '../../../services/reservation.service';
+import { AuthService } from '../../../services/auth.service';
+import { Reservation } from '../../../models/Reservation';
+declare var window: any;
 
 @Component({
   selector: 'app-reservations',
@@ -16,49 +10,38 @@ interface Reservation {
   styleUrls: ['./reservations.component.css'],
 })
 export class ReservationsComponent implements OnInit {
-  reservations: Reservation[] = [
-    {
-      id: 1,
-      bien: { titre: 'Appartement moderne' },
-      client: { nom: 'Ahmed Ben Ali' },
-      dateDebut: new Date('2023-10-01'),
-      dateFin: new Date('2023-10-10'),
-      prix: 1200,
-      statut: 'en_attente',
-    },
-    {
-      id: 2,
-      bien: { titre: 'Villa de luxe' },
-      client: { nom: 'Fatma Bouazizi' },
-      dateDebut: new Date('2023-09-15'),
-      dateFin: new Date('2023-09-20'),
-      prix: 2500,
-      statut: 'termine',
-    },
-    {
-      id: 3,
-      bien: { titre: 'Studio cosy' },
-      client: { nom: 'Mohamed Trabelsi' },
-      dateDebut: new Date('2023-08-01'),
-      dateFin: new Date('2023-08-05'),
-      prix: 800,
-      statut: 'termine',
-    },
-  ];
+  reservations: Reservation[] = [];
+  reservationsFiltrees: Reservation[] = [];
 
   filtres = [
     { label: 'Toutes', value: 'toutes' },
-    { label: 'En attente', value: 'en_attente' },
-    
-    { label: 'Terminées', value: 'termine' },
-    { label: 'Annulées', value: 'annule' },
+    { label: 'En attente', value: 'EN_ATTENTE' },
+    { label: 'Confirmées', value: 'CONFIRMEE' },
+    { label: 'Refusées', value: 'REFUSEE' },
+    { label: 'Annulées', value: 'ANNULEE' },
+    { label: 'Terminées', value: 'TERMINEE' },
   ];
 
   filtreActif: string = 'toutes';
-  reservationsFiltrees: Reservation[] = [];
+  selectedReservationId: number | null = null;
+  commentaireRefus: string = '';
+
+  constructor(
+    private reservationService: ReservationService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.filtrerReservations();
+    this.fetchReservations();
+  }
+
+  fetchReservations(): void {
+    this.reservationService.getReservationsByProprietaire().subscribe((res) => {
+      console.log(res);
+      this.reservations = res;
+      
+      this.filtrerReservations();
+    });
   }
 
   changerFiltre(filtre: string): void {
@@ -67,32 +50,46 @@ export class ReservationsComponent implements OnInit {
   }
 
   filtrerReservations(): void {
-    if (this.filtreActif === 'toutes') {
-      this.reservationsFiltrees = this.reservations;
-    } else {
-      this.reservationsFiltrees = this.reservations.filter(
-        (r) => r.statut === this.filtreActif
-      );
-    }
+    this.reservationsFiltrees =
+      this.filtreActif === 'toutes'
+        ? this.reservations
+        : this.reservations.filter((r) => r.statut === this.filtreActif);
   }
 
   accepterReservation(id: number): void {
-    const reservation = this.reservations.find((r) => r.id === id);
-    if (reservation) {
-      reservation.statut = 'termine';
-      alert('Réservation acceptée avec succès !');
+    this.reservationService.accepter(id).subscribe(() => {
+      alert('Réservation acceptée.');
+      this.fetchReservations();
+    });
+  }
+
+  // Ouvrir le modal de refus
+  ouvrirRefusModal(reservation: any): void {
+    this.selectedReservationId = reservation.id;
+    this.commentaireRefus = '';
+    const modal = new window.bootstrap.Modal(document.getElementById('refusModal'));
+    modal.show();
+  }
+
+  // Confirmer refus
+  confirmerRefus(): void {
+    if (this.selectedReservationId) {
+      this.reservationService.refuser(this.selectedReservationId, this.commentaireRefus).subscribe(() => {
+        alert('Réservation refusée.');
+        this.fetchReservations();
+        this.selectedReservationId = null;
+        this.fermerModal();
+      });
     }
   }
 
-  refuserReservation(id: number): void {
-    const reservation = this.reservations.find((r) => r.id === id);
-    if (reservation) {
-      reservation.statut = 'annule';
-      alert('Réservation refusée avec succès !');
-    }
+  // Fermer le modal
+  fermerModal(): void {
+    const modal = document.getElementById('modalRefus') as HTMLDialogElement;
+    modal?.close(); // Ferme le modal
   }
 
   voirDetails(reservation: Reservation): void {
-    alert(`Détails de la réservation : ${reservation.bien.titre}`);
+    alert(`Détails : `);
   }
 }

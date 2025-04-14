@@ -8,11 +8,15 @@ export interface Utilisateur {
   nom: string;
   prenom: string;
   email: string;
-  motDePasse: string;
-  telephone: string;
-  images: Image[];
-  roles: Role[];
-  biensImmobiliers: BienImmobilier[];
-  favoris: BienImmobilier[];
-  reservations: Reservation[];
+  adresse?: string;
+  region?: string;
+  motDePasse?: string;
+  telephone?: string;
+  enabled?: boolean;
+  images?: Image[];
+  imageUrls?: string[];
+  roles: string[];
+  biensImmobiliers?: BienImmobilier[];
+  favoris?: BienImmobilier[];
+  reservations?: Reservation[];
 }

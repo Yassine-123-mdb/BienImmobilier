@@ -9,6 +9,7 @@ import { Image } from '../../../models/Image';
 import { Reservation } from '../../../models/Reservation';
 import { CategorieWrapper } from '../../../models/CategorieWrapper';
 import { ImageService } from '../../../services/image-service.service';
+import { GoverneratCommuneService } from '../../../services/governerat-commune.service';
 
 @Component({
   selector: 'app-add-annonce',
@@ -19,18 +20,27 @@ export class AddAnnonceComponent {
   
   annonce: BienImmobilier = this.initAnnonce();
 
-  Listcategories! : Categorie[];
+  Listcategories!: Categorie[];
   newCat!: Categorie;
-  uploadedImages: File[] = []; // Remplace uploadedImage par un tableau
+  uploadedImages: File[] = [];
   myImages: string[] = [];
-  isImageUpdated: Boolean=false;
+  isImageUpdated: Boolean = false;
   imagePath: any;
-  constructor(private annonceService: AnnonceService, private imageServiceService:ImageService) {}
+
+  gouvernorats: Gouvernorat[] = [];
+  communes: Commune[] = [];
+  selectedComId!: number;
+  selectedGouvernoratId!: number;
+
+  constructor(
+    private annonceService: AnnonceService, 
+    private imageServiceService: ImageService, 
+    private gouvcommunService: GoverneratCommuneService
+  ) {}
 
   ngOnInit(): void {
     this.annonceService.listeCategorie().subscribe(
       (response: any) => {
-        // Handle both direct array response and wrapped response
         if (Array.isArray(response)) {
           this.Listcategories = response;
         } else if (response._embedded && response._embedded.categorie) {
@@ -46,18 +56,19 @@ export class AddAnnonceComponent {
         this.Listcategories = [];
       }
     );
+    
+    this.loadGouvernorats();
   }
 
-  /** Initialise un objet vide pour l'annonce */
   private initAnnonce(): BienImmobilier {
     return {
-    
       titre: '',
       description: '',
       adresse: '',  
       prix: 0,
       disponible: true,
       typeTransaction: '',
+      typeLocation: '',
       dateAjout: new Date(),
       surface: 0,
       localisation: '',
@@ -70,30 +81,47 @@ export class AddAnnonceComponent {
       piscine: false,
       balcon: false,
       vueSurMer: false,
+      wifi: false,
+      meuble: false,
+      chargesIncluses: false,
+      statutJuridique: '',
+      ascenseur: false,
+      interphone: false,
       nombresEtages: 0,
       superficie: 0,
       constructible: false,
       isVerifieAdmin: false,
-      // categorie supprimé ici
-      // // À remplir dynamiquement avec l'utilisateur connecté
       images: [],
-      /* gouvernorat: {} as Gouvernorat, // À remplir dynamiquement
-      commune: {} as Commune, // À remplir dynamiquement
-      avis: [],
-      reservations: [],
-      utilisateursFavoris: [], */
     };
   }
 
-  /** Gère la sélection des fichiers et les convertit en Base64 */
+  private loadGouvernorats(): void {
+    this.gouvcommunService.getAllGouvernorats().subscribe(
+      (data: Gouvernorat[]) => this.gouvernorats = data,
+      (error) => console.error('Erreur lors du chargement des gouvernorats', error)
+    );
+  }
+
+  
+ 
+  onGouvernoratChange(): void {
+    if (this.selectedGouvernoratId) {
+      this.gouvcommunService.getCommunesByGouvernorat(this.selectedGouvernoratId).subscribe(
+        (data: Commune[]) => this.communes = data,
+        (error) => console.error('Erreur lors du chargement des communes', error)
+      );
+    } else {
+      this.communes = [];
+    }
+  }
+  
   onFileSelected(event: any) {
     if (event.target.files && event.target.files.length) {
-      // Reset si nécessaire
-      
+      this.uploadedImages = [];
       
       for (let i = 0; i < event.target.files.length; i++) {
         const file = event.target.files[i];
-        this.uploadedImages.push(file); // Conserve les fichiers originaux
+        this.uploadedImages.push(file);
         
         const reader = new FileReader();
         reader.onload = () => {
@@ -109,10 +137,9 @@ export class AddAnnonceComponent {
       }
     }
   }
+
   onAddImagesPhone() {
-    // Uploader toutes les images immédiatement après sélection
     this.uploadedImages.forEach((file, index) => {
-      // Vérifie si l'image n'a pas déjà été uploadée
       if (!this.annonce.images.some(img => img.name === file.name)) {
         this.imageServiceService.uploadImage(file, file.name)
           .subscribe((img: Image) => {
@@ -123,29 +150,44 @@ export class AddAnnonceComponent {
     });
   }
   
-  /** Convertit un fichier en Base64 et l'ajoute à la liste */
-  
   onSubmit(): void {
-    const annonceToSend = {...this.annonce};
-    delete annonceToSend.id;
-    annonceToSend.categorie = this.newCat;
+    
   
-    this.annonceService.ajouterAnnonce(annonceToSend).subscribe(
-      (createdAnnonce: BienImmobilier) => {
-        console.log('Annonce créée avec succès:', createdAnnonce);
-        
-        if (createdAnnonce.id && this.annonce.images.length > 0) {
-          this.associateAllImagesWithBien(createdAnnonce.id);
-        }
+    this.gouvcommunService.getCommuneById(this.selectedComId).subscribe(
+      (data: Commune) => {
+        this.annonce.commune = data;
+
+        const annonceToSend = {
+          ...this.annonce,
+          commune: this.annonce.commune,
+          categorie: this.newCat
+        };
+  
+        console.log('Annonce à envoyer:', annonceToSend);
+  
+        delete annonceToSend.id;
+        delete annonceToSend.communeDetails;
+  
+        this.annonceService.ajouterAnnonce(annonceToSend).subscribe(
+          (createdAnnonce: BienImmobilier) => {
+            console.log('Annonce créée avec succès:', createdAnnonce);
+  
+            if (createdAnnonce.id && this.annonce.images.length > 0) {
+              this.associateAllImagesWithBien(createdAnnonce.id);
+            }
+          },
+          (error) => {
+            console.error('Erreur création annonce:', error);
+          }
+        );
       },
-      (error) => {
-        console.error('Erreur création annonce:', error);
+      (error: any) => {
+        console.error('Erreur lors du chargement de la commune:', error);
       }
     );
   }
   
   private associateAllImagesWithBien(bienId: number): void {
-    // Convertir les images base64 en Blob
     this.annonce.images.forEach(image => {
       if (image.preview) {
         const blob = this.dataURItoBlob(image.preview);
@@ -159,7 +201,7 @@ export class AddAnnonceComponent {
           (associatedImg: Image) => {
             console.log('Image associée avec succès:', associatedImg);
           },
-          (error :any) => {
+          (error: any) => {
             console.error('Erreur association image:', error);
           }
         );
@@ -167,7 +209,6 @@ export class AddAnnonceComponent {
     });
   }
   
-  // Helper pour convertir base64 en Blob
   private dataURItoBlob(dataURI: string): Blob {
     const byteString = atob(dataURI.split(',')[1]);
     const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
@@ -185,42 +226,25 @@ export class AddAnnonceComponent {
     this.annonce.images.splice(index, 1);
   }
 
-  /** Ouvre la boîte de dialogue pour sélectionner des fichiers */
   triggerFileInput(): void {
     document.getElementById('file-input')?.click();
   }
 
-  /** Retourne le nombre d'emplacements d'images disponibles */
   getEmptyImageSlots(): number[] {
     const maxImages = 10;
     return Array(maxImages - this.annonce.images.length).fill(0);
   }
 
-  /** Met à jour l'affichage des champs en fonction de la catégorie */
   onCategoryChange(): void {
     if (this.annonce.categorie && this.annonce.categorie.id === 1) {
       this.resetNonApplicableFields();
     }
   }
 
-  /** Réinitialise les champs non applicables aux terrains */
   private resetNonApplicableFields(): void {
     this.annonce.nombresChambres = 0;
     this.annonce.nombresPieces = 0;
     this.annonce.nombresSalledebain = 0;
     this.annonce.nombresEtages = 0;
   }
-
-  /** Affiche les détails d'un bien immobilier */
-  showDetails(): boolean {
-    return this.annonce.categorie ? this.annonce.categorie.nom !== 'TERRAIN' : true;
-  }
-
-  /** Affiche uniquement les détails d'un terrain */
-  showTerrainDetails(): boolean {
-    return this.annonce.categorie ? this.annonce.categorie.nom === 'TERRAIN' : false;
-  }
-
-  /** Soumet l'annonce au service */
-  
 }

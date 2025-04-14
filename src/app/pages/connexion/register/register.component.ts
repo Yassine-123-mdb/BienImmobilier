@@ -1,6 +1,8 @@
+// register.component.ts
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+declare var window: any; // Pour accéder au modal Bootstrap
 
 @Component({
   selector: 'app-register',
@@ -16,11 +18,12 @@ export class RegisterComponent {
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
-  roles: string[] = []; // L'utilisateur choisira son rôle
+  roles: string[] = [];
 
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
 
+  verificationCode: string = ''; // Code de vérification
   regions: string[] = ['Tunis', 'Sfax', 'Sousse', 'Nabeul', 'Bizerte'];
 
   constructor(private authService: AuthService, private router: Router) {}
@@ -43,14 +46,6 @@ export class RegisterComponent {
       alert('Les mots de passe ne correspondent pas.');
       return;
     }
-    if(this.roles[0]=="PROPRIETAIRE"){
-      this.router.navigate(['/proprietaire/abonnement']);
-
-    }
-    if(this.roles[0]=="VISITEUR"){
-      this.router.navigate(['/accueil']);
-    }
-
 
     const user = {
       nom: this.nom,
@@ -62,18 +57,46 @@ export class RegisterComponent {
       motDePasse: this.password,
       roles: this.roles // ✅ Envoie bien un tableau des rôles
     };
-    
 
-   /*  this.authService.register(user).subscribe(
+    this.authService.register(user).subscribe(
       (response) => {
         console.log('Inscription réussie', response);
         alert('Inscription réussie !');
-        this.router.navigate(['/login']); // Redirection vers la page de connexion
+
+        // Ouvrir le modal de vérification après l'inscription
+        const verificationModal = new window.bootstrap.Modal(
+          document.getElementById('verificationModal')
+        );
+        verificationModal.show();
       },
       (error) => {
         console.error('Erreur lors de l\'inscription', error);
         alert('Erreur lors de l\'inscription');
       }
-    ); */
+    );
   }
+
+  // register.component.ts
+  onVerifyCode() {
+    if (!this.verificationCode) {
+      alert('Veuillez entrer le code de vérification.');
+      return;
+    }
+
+    this.authService.verifyCode(this.email, this.verificationCode).subscribe(
+      (response) => {
+        alert(response); // Affiche le message renvoyé par le backend
+        if (response === 'Compte vérifié avec succès !') {
+          this.router.navigate(['/login']);
+        } else {
+          alert('Erreur lors de la vérification.');
+        }
+      },
+      (error) => {
+        console.error('Erreur lors de la vérification', error);
+        alert('Erreur lors de la vérification. Veuillez réessayer.');
+      }
+    );
+  }
+
 }

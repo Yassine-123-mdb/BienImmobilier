@@ -1,98 +1,148 @@
 import { Component, OnInit } from '@angular/core';
-
-interface Utilisateur {
-  id: number;
-  image: string;
-  nom: string;
-  prenom: string;
-  email: string;
-  role: string;
-  actif: boolean;
-}
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-utilisateurs-admin',
   templateUrl: './utilisateurs-admin.component.html',
-  styleUrls: ['./utilisateurs-admin.component.css'],
+  styleUrls: ['./utilisateurs-admin.component.css']
 })
 export class UtilisateursAdminComponent implements OnInit {
-  // Données simulées des utilisateurs
-  utilisateurs: Utilisateur[] = [
-    {
-      id: 1,
-      image: 'assets/yassine.jpg',
-      nom: 'Meddeb',
-      prenom: 'yassine',
-      email: 'ahmed@example.com',
-      role: 'admin',
-      actif: true,
-    },
-    {
-      id: 2,
-      image: 'assets/yassine.jpg',
-      nom: 'Bouazizi',
-      prenom: 'Fatma',
-      email: 'fatma@example.com',
-      role: 'proprietaire',
-      actif: true,
-    },
-    {
-      id: 3,
-      image: 'assets/yassine.jpg',
-      nom: 'Trabelsi',
-      prenom: 'Mohamed',
-      email: 'mohamed@example.com',
-      role: 'client',
-      actif: false,
-    },
-  ];
+  users: any[] = [];
+  filteredUsers: any[] = [];
+  isLoading = false;
+  totalItems = 0;
+  currentPage = 1;
+  itemsPerPage = 10;
+  totalPages = 1;
 
-  // Filtres
   searchQuery: string = '';
   selectedRole: string = '';
-  utilisateursFiltres: Utilisateur[] = [];
+
+  constructor(public userService: UserService) {} // Changé à public pour l'accès dans le template
 
   ngOnInit(): void {
-    this.filtrerUtilisateurs();
+    this.loadUsers();
   }
 
-  // Filtrer les utilisateurs
-  filtrerUtilisateurs(): void {
-    this.utilisateursFiltres = this.utilisateurs.filter((user) => {
-      const matchesSearch =
-        user.nom.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(this.searchQuery.toLowerCase());
-      const matchesRole = this.selectedRole ? user.role === this.selectedRole : true;
-      return matchesSearch && matchesRole;
+  loadUsers(page: number = 0): void {
+    this.isLoading = true;
+    this.userService.getUsers(page, this.itemsPerPage)
+      .subscribe({
+        next: (response) => {
+          this.users = response.content;
+          console.log(this.users);
+          this.filteredUsers = [...this.users];
+          this.totalItems = response.totalElements;
+          this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+          alert('Erreur lors du chargement des utilisateurs');
+        }
+      });
+  }
+
+  applyFilters(): void {
+    if (!this.searchQuery && !this.selectedRole) {
+      this.loadUsers();
+      return;
+    }
+
+    this.isLoading = true;
+    this.userService.searchUsers(this.searchQuery, this.selectedRole)
+      .subscribe({
+        next: (users) => {
+          this.filteredUsers = users;
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+          alert('Erreur lors de la recherche');
+        }
+      });
+  }
+
+  deleteUser(id: number): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+      this.userService.deleteUser(id).subscribe({
+        next: () => {
+          this.loadUsers(this.currentPage - 1);
+          alert('Utilisateur supprimé avec succès');
+        },
+        error: () => {
+          alert('Erreur lors de la suppression');
+        }
+      });
+    }
+  }
+
+  toggleStatus(id: number): void {
+    this.userService.toggleUserStatus(id).subscribe({
+      next: (updatedUser) => {
+        const index = this.users.findIndex((u: any) => u.id === updatedUser.id);
+        if (index !== -1) {
+          this.users[index] = updatedUser;
+          this.applyFilters();
+        }
+        alert(`Utilisateur ${updatedUser.enabled ? 'activé' : 'désactivé'} avec succès`);
+      },
+      error: () => {
+        alert('Erreur lors du changement de statut');
+      }
     });
   }
 
-  // Supprimer un utilisateur
-  supprimerUtilisateur(id: number): void {
-    const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');
-    if (confirmation) {
-      this.utilisateurs = this.utilisateurs.filter((user) => user.id !== id);
-      this.filtrerUtilisateurs();
-      alert('Utilisateur supprimé avec succès !');
+  getMainRole(roles: string[]): string {
+    if (!roles || roles.length === 0) return 'CLIENT';
+    return roles[0];
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadUsers(page - 1);
+  }
+
+  // Nouvelle méthode pour générer les numéros de page
+  getPages(): number[] {
+    const pages = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
     }
+    return pages;
   }
 
-  // Activer/Désactiver un utilisateur
-  toggleActivation(id: number): void {
-    const user = this.utilisateurs.find((u) => u.id === id);
-    if (user) {
-      user.actif = !user.actif;
-      alert(`Utilisateur ${user.actif ? 'activé' : 'désactivé'} avec succès !`);
-    }
+  // Nouvelle méthode pour obtenir la dernière page
+  getLastPage(): number {
+    return this.totalPages;
   }
 
-  // Voir les réservations d'un client
-  voirReservations(id: number): void {
-    alert(`Afficher les réservations de l'utilisateur ${id}`);
+  // Méthode pour gérer les réservations
+  viewReservations(userId: number): void {
+    this.userService.getUserReservations(userId).subscribe({
+      next: (reservations) => {
+        console.log('Réservations:', reservations);
+        // Ajoutez ici la logique pour afficher les réservations
+      },
+      error: () => {
+        alert('Erreur lors du chargement des réservations');
+      }
+    });
   }
 
-  // Voir les annonces d'un propriétaire
-  voirAnnonces(id: number): void {
-    alert(`Afficher les annonces de l'utilisateur ${id}`);
+  // Méthode pour gérer les annonces
+  viewAnnonces(userId: number): void {
+    this.userService.getUserAnnonces(userId).subscribe({
+      next: (annonces) => {
+        console.log('Annonces:', annonces);
+        // Ajoutez ici la logique pour afficher les annonces
+      },
+      error: () => {
+        alert('Erreur lors du chargement des annonces');
+      }
+    });
   }
 }

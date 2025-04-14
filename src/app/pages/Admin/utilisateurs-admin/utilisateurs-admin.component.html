@@ -1,80 +1,142 @@
-<div class="container  utilisateurs-container">
-  <h2>Gestion des Utilisateurs</h2>
+<div class="container mt-4">
+  <h2 class="mb-4">Gestion des Utilisateurs</h2>
 
   <!-- Barre de recherche -->
-  <div class="row mb-3 g-2">
+  <div class="row mb-4">
     <div class="col-md-6">
-      <input 
-        type="text" 
-        [(ngModel)]="searchQuery" 
-        class="form-control" 
-        placeholder="Rechercher par nom ou email..."
-        (input)="filtrerUtilisateurs()" 
-      />
+      <div class="input-group">
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          class="form-control" 
+          placeholder="Rechercher par nom, prénom ou email..."
+          (keyup.enter)="applyFilters()"
+        >
+        <button class="btn btn-outline-secondary" (click)="applyFilters()">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
       <select 
         [(ngModel)]="selectedRole" 
         class="form-select" 
-        (change)="filtrerUtilisateurs()"
+        (change)="applyFilters()"
       >
         <option value="">Tous les rôles</option>
-        <option value="admin">Admin</option>
-        <option value="proprietaire">Propriétaire</option>
-        <option value="client">Client</option>
+        <option value="ADMIN">Admin</option>
+        <option value="PROPRIETAIRE">Propriétaire</option>
+        <option value="CLIENT">Client</option>
       </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100" (click)="loadUsers()">
+        <i class="bi bi-arrow-clockwise"></i> Actualiser
+      </button>
     </div>
   </div>
 
-  <!-- Tableau des utilisateurs (Responsive Bootstrap) -->
+  <!-- Tableau -->
   <div class="table-responsive">
-    <table class="table table-bordered table-striped text-center align-middle">
-      <thead class="table-dark">
+    <table class="table table-hover table-bordered">
+      <thead class="table-light">
         <tr>
-          <th>Image</th>
+          <th>Photo</th>
           <th>Nom</th>
           <th>Prénom</th>
           <th>Email</th>
           <th>Rôle</th>
+          <th>Statut</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of utilisateursFiltres">
+        <tr *ngIf="isLoading">
+          <td colspan="7" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+          </td>
+        </tr>
+        <tr *ngFor="let user of filteredUsers">
           <td>
-            <img [src]="user.image" alt="Image de profil" class="user-image rounded-circle" />
+            <img 
+              [src]="user.imageUrls?.[0] || 'assets/default-user.png'" 
+              alt="Photo profil" 
+              class="rounded-circle user-avatar"
+    
+            >
           </td>
           <td>{{ user.nom }}</td>
           <td>{{ user.prenom }}</td>
           <td>{{ user.email }}</td>
-          <td><span class="badge bg-primary">{{ user.role }}</span></td>
           <td>
-            <div class="d-flex flex-wrap gap-2 justify-content-center">
-              <button class="btn btn-danger btn-sm" (click)="supprimerUtilisateur(user.id)">
-                <i class="bi bi-trash"></i> Supprimer
+            <span class="badge" [ngClass]="{
+              'bg-danger': getMainRole(user.roles) === 'ADMIN',
+              'bg-warning text-dark': getMainRole(user.roles) === 'PROPRIETAIRE',
+              'bg-success': getMainRole(user.roles) === 'CLIENT'
+            }">
+              {{ getMainRole(user.roles) | lowercase }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="user.enabled ? 'bg-success' : 'bg-secondary'">
+              {{ user.enabled ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-2">
+              <button 
+                class="btn btn-sm btn-outline-danger" 
+                (click)="deleteUser(user.id)"
+              >
+                <i class="bi bi-trash"></i>
               </button>
               <button 
-                class="btn btn-success btn-sm" 
-                [ngClass]="{ 'btn-warning': user.actif }" 
-                (click)="toggleActivation(user.id)"
+                class="btn btn-sm" 
+                [ngClass]="user.enabled ? 'btn-warning' : 'btn-success'"
+                (click)="toggleStatus(user.id)"
               >
-                {{ user.actif ? 'Désactiver' : 'Activer' }}
+                <i class="bi" [ngClass]="user.enabled ? 'bi-lock' : 'bi-unlock'"></i>
               </button>
-              <button *ngIf="user.role === 'client'" class="btn btn-info btn-sm" (click)="voirReservations(user.id)">
-                <i class="bi bi-calendar-check"></i> Réservations
+              <button 
+                *ngIf="getMainRole(user.roles) === 'CLIENT'"
+                class="btn btn-sm btn-info" 
+                (click)="viewReservations(user.id)"
+              >
+                <i class="bi bi-calendar"></i>
               </button>
-              <button *ngIf="user.role === 'proprietaire'" class="btn btn-secondary btn-sm" (click)="voirAnnonces(user.id)">
-                <i class="bi bi-house"></i> Annonces
+              <button 
+                *ngIf="getMainRole(user.roles) === 'PROPRIETAIRE'"
+                class="btn btn-sm btn-secondary" 
+                (click)="viewAnnonces(user.id)"
+              >
+                <i class="bi bi-house"></i>
               </button>
             </div>
+          </td>
+        </tr>
+        <tr *ngIf="!isLoading && filteredUsers.length === 0">
+          <td colspan="7" class="text-center py-4 text-muted">
+            Aucun utilisateur trouvé
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Message si aucun utilisateur trouvé -->
-  <div *ngIf="utilisateursFiltres.length === 0" class="alert alert-warning text-center">
-    Aucun utilisateur trouvé.
-  </div>
+  <!-- Pagination -->
+  <nav *ngIf="totalItems > itemsPerPage">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="onPageChange(currentPage - 1)">Précédent</a>
+      </li>
+      <li class="page-item" *ngFor="let page of getPages()" [class.active]="page === currentPage">
+        <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === getLastPage()">
+        <a class="page-link" (click)="onPageChange(currentPage + 1)">Suivant</a>
+      </li>
+    </ul>
+  </nav>
 </div>

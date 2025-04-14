@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import{Image} from '../models/Image';
 @Injectable({
@@ -26,10 +26,19 @@ export class ImageService {
       uploadImageForBien(file: File, filename: string, bienId: number): Observable<Image> {
         const imageFormData = new FormData();
         imageFormData.append('image', file, filename );
-        return this.http.post<Image>(`${this.apiURLImg}/upload/${bienId}`, imageFormData);
+        return this.http.post<Image>(`${this.apiURLImg}/upload/${bienId}`, imageFormData,{withCredentials: true});
       }
      supprimerImage(id : number) {
       const url = `${this.apiURLImg} /delete/${id}`;
       return this.http.delete(url,);
       }
+      uploadImageUser(file: File, filename: string, id:number): Observable<any>{
+        const imageFormData = new FormData();
+        imageFormData.append('image', file, filename);
+        const url = `${this.apiURLImg + '/user/uploadImageUser'}/${id}`;
+        return this.http.post(url, imageFormData,{withCredentials: true});
+     }
+     getUserImage(userId: number): Observable<Blob> {
+      return this.http.get(`${this.apiURLImg}/user/${userId}`, { responseType: 'blob', withCredentials: true });
+    }
 }

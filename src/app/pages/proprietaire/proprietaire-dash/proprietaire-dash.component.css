@@ -1,4 +1,5 @@
 .dashboard-container {
+  margin-top: 90px;
   display: flex;
   min-height: 100vh;
   background: #f8f9fa;
@@ -145,6 +146,7 @@
 @media (max-width: 1199px) {
   .menu-toggle-btn {
     display: block;
+    margin-top: 70px;
   }
 
   .sidebar {

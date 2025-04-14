@@ -1,45 +1,66 @@
 <div class="reservations-container">
-    <h2>Gestion des Réservations</h2>
-  
-    <!-- Filtres -->
-    <div class="filtres">
-      <button
-        *ngFor="let filtre of filtres"
-        [ngClass]="{ active: filtreActif === filtre.value }"
-        (click)="changerFiltre(filtre.value)"
-      >
-        {{ filtre.label }}
-      </button>
+  <h2>Gestion des Réservations</h2>
+
+  <!-- Filtres -->
+  <div class="filtres">
+    <button
+      *ngFor="let filtre of filtres"
+      [ngClass]="{ active: filtreActif === filtre.value }"
+      (click)="changerFiltre(filtre.value)"
+    >
+      {{ filtre.label }}
+    </button>
+  </div>
+
+  <!-- Liste des Réservations -->
+  <div class="reservations-list">
+    <div *ngFor="let reservation of reservationsFiltrees" class="reservation-card">
+      <div class="reservation-header">
+        <h3>{{ reservation.bien?.titre}}</h3>
+        <span class="statut" [ngClass]="reservation.statut">{{ reservation.statut }}</span>
+      </div>
+      <div class="reservation-details">
+        <p><strong>Client :</strong> {{ reservation.client?.nom }}</p>
+        <p><strong>Dates :</strong> {{ reservation.dateDebut | date:'dd/MM/yyyy' }} - {{ reservation.dateFin | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Prix :</strong> {{ reservation.bien?.prix }} TND</p>
+      </div>
+      <div class="reservation-actions">
+        <button *ngIf="reservation.statut === 'EN_ATTENTE'" class="btn btn-accepter" (click)="accepterReservation(reservation.id!)">
+          <i class="bi bi-check-circle"></i> Accepter
+        </button>
+        <button *ngIf="reservation.statut === 'EN_ATTENTE'" class="btn btn-refuser" (click)="ouvrirRefusModal(reservation)">
+          <i class="bi bi-x-circle"></i> Refuser
+        </button>
+        <button class="btn btn-details" (click)="voirDetails(reservation)">
+          <i class="bi bi-eye"></i> Détails
+        </button>
+      </div>
     </div>
-  
-    <!-- Liste des Réservations -->
-    <div class="reservations-list">
-      <div *ngFor="let reservation of reservationsFiltrees" class="reservation-card">
-        <div class="reservation-header">
-          <h3>{{ reservation.bien.titre }}</h3>
-          <span class="statut" [ngClass]="reservation.statut">{{ reservation.statut }}</span>
-        </div>
-        <div class="reservation-details">
-          <p><strong>Client :</strong> {{ reservation.client.nom }}</p>
-          <p><strong>Dates :</strong> {{ reservation.dateDebut | date:'dd/MM/yyyy' }} - {{ reservation.dateFin | date:'dd/MM/yyyy' }}</p>
-          <p><strong>Prix :</strong> {{ reservation.prix }} TND</p>
-        </div>
-        <div class="reservation-actions">
-          <button *ngIf="reservation.statut === 'en_attente'" class="btn btn-accepter" (click)="accepterReservation(reservation.id)">
-            <i class="bi bi-check-circle"></i> Accepter
-          </button>
-          <button *ngIf="reservation.statut === 'en_attente'" class="btn btn-refuser" (click)="refuserReservation(reservation.id)">
-            <i class="bi bi-x-circle"></i> Refuser
-          </button>
-          <button class="btn btn-details" (click)="voirDetails(reservation)">
-            <i class="bi bi-eye"></i> Détails
-          </button>
-        </div>
-      </div>
-  
-      <!-- Message si aucune réservation -->
-      <div *ngIf="reservationsFiltrees.length === 0" class="no-reservations">
-        <p>Aucune réservation trouvée.</p>
-      </div>
+
+    <!-- Message si aucune réservation -->
+    <div *ngIf="reservationsFiltrees.length === 0" class="no-reservations">
+      <p>Aucune réservation trouvée.</p>
     </div>
   </div>
+
+  <!-- Modal de confirmation de refus -->
+  <div class="modal fade" id="refusModal" tabindex="-1" aria-labelledby="refusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="refusModalLabel">Confirmer le refus</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Voulez-vous vraiment refuser cette réservation ?</p>
+                <textarea [(ngModel)]="commentaireRefus" placeholder="Ajouter un commentaire (facultatif)" class="form-control"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" (click)="confirmerRefus()">Confirmer le refus</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+</div>

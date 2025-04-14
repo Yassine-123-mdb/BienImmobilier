@@ -1,11 +1,12 @@
-import { Utilisateur } from "./Utilisateur";
 import { BienImmobilier } from "./BienImmobilier";
 
 export interface Avis {
-  id: number;
+  id?: number;
   note: number;
   commentaire: string;
   date: Date;
-  auteur: Utilisateur;
+  clientNom:string;
+  clientPrenom:string;
+
   bienImmobilier: BienImmobilier;
 }

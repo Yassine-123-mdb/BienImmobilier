@@ -1,38 +1,40 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Reservation } from '../models/Reservation';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
-  private apiUrl = 'http://localhost:3000/reservations'; // URL de l'API
 
-  constructor(private http: HttpClient) {}
+  private baseUrl = 'http://localhost:9091/api/reservations';
 
-  // Créer une nouvelle réservation
+  constructor(private http: HttpClient, private authService: AuthService) {}
+
   creerReservation(reservation: Reservation): Observable<Reservation> {
-    return this.http.post<Reservation>(this.apiUrl, reservation);
+    const headers = this.authService.getAuthHeaders(); 
+    const bienId = reservation.bien?.id;
+    return this.http.post<Reservation>(`${this.baseUrl}/${bienId}`, reservation, { headers, withCredentials: true });
   }
-
-  // Récupérer toutes les réservations
-  getReservations(): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(this.apiUrl);
+  getReservationsByProprietaire(): Observable<Reservation[]> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.get<Reservation[]>(`${this.baseUrl}/proprietaire`,{ headers, withCredentials: true });
   }
-
-  // Récupérer une réservation par ID
-  getReservationById(id: number): Observable<Reservation> {
-    return this.http.get<Reservation>(`${this.apiUrl}/${id}`);
+  getIndisponibilites(bienId: number): Observable<{ dateDebut: string, dateFin: string }[]> {
+    return this.http.get<{ dateDebut: string, dateFin: string }[]>(`${this.baseUrl}/bien/${bienId}/indisponibilites`, { withCredentials: true });
   }
+  
 
-  // Mettre à jour une réservation (ex: changer le statut)
-  updateReservation(id: number, reservation: Partial<Reservation>): Observable<Reservation> {
-    return this.http.put<Reservation>(`${this.apiUrl}/${id}`, reservation);
+  accepter(reservationId: number): Observable<Reservation> { 
+   
+    return this.http.post<Reservation>(`${this.baseUrl}/proprietaire/${reservationId}/confirmer`, {},{withCredentials: true });
   }
+  
 
-  // Supprimer une réservation
-  deleteReservation(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  refuser(reservationId: number, commentaire: string): Observable<void> {
+    
+    return this.http.post<void>(`${this.baseUrl}/proprietaire/${reservationId}/refuser`, { commentaire} ,{withCredentials: true});
   }
 }

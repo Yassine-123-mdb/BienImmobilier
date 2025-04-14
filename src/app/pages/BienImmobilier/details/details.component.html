@@ -2,19 +2,18 @@
 <div class="container-fluid details-container">
   <div class="row col-12">
     <!-- Section gauche : Images et détails du bien -->
-    <div class="col-xl-8 col-lg-12 col-md-12 bien-content"> <!-- 25% de largeur -->
+    <div class="col-xl-8 col-lg-12 col-md-12 bien-content">
       <h2>{{ bien.titre }}</h2>
       <p class="price">{{ bien.prix | currency:'TND' }}</p>
 
-      <!-- Grande image principale avec navigation -->
-      <!-- Modifiez simplement les références aux images comme suit : -->
+      <!-- Grande image principale -->
       <div class="image-display position-relative">
         <button class="arrow left" (click)="changerImagePrincipale(imagePrincipaleIndex - 1)">&#9665;</button>
         <img [src]="imagePrincipale" class="main-image img-fluid rounded" alt="Image principale">
         <button class="arrow right" (click)="changerImagePrincipale(imagePrincipaleIndex + 1)">&#9655;</button>
       </div>
 
-      <!-- Et la galerie de miniatures : -->
+      <!-- Galerie de miniatures -->
       <div class="thumbnail-gallery d-flex overflow-auto my-3">
         <img *ngFor="let img of imageUrls; let i = index" [src]="img" class="thumbnail img-thumbnail mx-1" 
             [class.active]="i === imagePrincipaleIndex" (click)="changerImagePrincipale(i)">
@@ -45,7 +44,9 @@
           <a [routerLink]="['/reservation', bien.id]" class="btn btn-warning">
             <i class="bi bi-calendar-check"></i> Réserver
           </a>
-          <button class="btn btn-outline-danger" (click)="ajouterAuxFavoris()">❤️ Ajouter aux favoris</button>
+          <button class="btn btn-outline-danger" (click)="ajouterAuxFavoris()">
+            {{ isFavoris() ? '❤️ Retirer des favoris' : '❤️ Ajouter aux favoris' }}
+          </button>
         </div>
       </div>
 
@@ -53,14 +54,75 @@
       <div class="map-container mt-4">
         <iframe width="100%" height="300" frameborder="0" [src]="safeMapUrl"></iframe>
       </div>
+
+      <!-- Section Avis et Commentaires -->
+      <div class="reviews-section mt-5">
+        <h3 class="mb-4">📊 Avis des clients</h3>
+        
+        <!-- Note moyenne -->
+        <div class="average-rating mb-4 p-3 bg-light rounded">
+          <h4>Note moyenne: <span class="text-warning">{{ averageRating | number:'1.1-1' }}/5</span></h4>
+          <div class="stars">
+            <span *ngFor="let star of [1,2,3,4,5]" 
+                  [class.filled]="star <= averageRating"
+                  [class.half]="(star - 0.5) <= averageRating && averageRating < star">
+              ★
+            </span>
+          </div>
+          <small class="text-muted">Basé sur {{ avis.length }} avis</small>
+        </div>
+        
+        <!-- Liste des avis -->
+        <div class="reviews-list">
+          <div *ngFor="let avis of avis" class="review-card mb-4 p-3 border rounded">
+            <div class="review-header d-flex justify-content-between mb-2">
+              <div>
+                <strong>{{avis.clientNom}} {{ avis.clientPrenom}}</strong>
+                <div class="stars small">
+                  <span *ngFor="let star of [1,2,3,4,5]" [class.filled]="star <= avis.note">★</span>
+                </div>
+              </div>
+              <small class="text-muted">{{ avis.date | date:'dd/MM/yyyy' }}</small>
+            </div>
+            <p class="mb-0">{{ avis.commentaire }}</p>
+          </div>
+        </div>
+        
+        <!-- Formulaire d'ajout d'avis -->
+        <div *ngIf="currentUser" class="add-review mt-5 p-4 bg-light rounded">
+          <h4 class="mb-3">Laissez votre avis</h4>
+          <form (ngSubmit)="submitAvis()" #avisForm="ngForm">
+            <div class="mb-3">
+              <label class="form-label">Votre note</label>
+              <div class="rating-input">
+                <span *ngFor="let star of [1,2,3,4,5]" 
+                      (click)="newRating = star" 
+                      [class.active]="star <= newRating">
+                  ★
+                </span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <textarea class="form-control" [(ngModel)]="newComment" 
+                        name="comment" rows="3" placeholder="Votre commentaire..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="!avisForm.form.valid || newRating === 0">
+              <i class="bi bi-send"></i> Envoyer
+            </button>
+          </form>
+        </div>
+        <div *ngIf="!currentUser" class="alert alert-info mt-4">
+          <a routerLink="/login" class="alert-link">Connectez-vous</a> pour laisser un avis.
+        </div>
+      </div>
     </div>
 
     <!-- Section droite : Propriétaire + Chat -->
-    <div class="col-xl-3 col-lg-3 col-md-12 proprietaire-info mt-lg-0 mt-4 ms-lg-4"> <!-- 75% de largeur + marge à gauche -->
-      <img [src]=" 'assets/yassine.jpg'" class="img-fluid rounded-circle mb-3" alt="Photo du propriétaire">
-      <h4></h4>
+    <div class="col-xl-3 col-lg-3 col-md-12 proprietaire-info mt-lg-0 mt-4 ms-lg-4">
+      <img [src]="'assets/yassine.jpg'" class="img-fluid rounded-circle mb-3" alt="Photo du propriétaire">
+      <h4>Propriétaire</h4>
       <p><i class="bi bi-phone"></i> <a href="tel:21103925">21103925</a></p>
-      <p><i class="bi bi-envelope"></i>  <a href="mailto: yassinmeddeb564@gmail.com">yassinmeddeb564&#64;gmail.com </a></p>
+      <p><i class="bi bi-envelope"></i> <a href="mailto:yassinmeddeb564@gmail.com">yassinmeddeb564&#64;gmail.com</a></p>
 
       <!-- Chat Messenger -->
       <div class="chat-box mt-4">

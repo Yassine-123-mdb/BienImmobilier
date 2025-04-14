@@ -1,67 +1,68 @@
-<section class="search-bar  p-4 rounded shadow-sm mb-5">
-  <div class="container">
-    <div class="row g-2 ">
+<section class="search-bar p-4 rounded shadow-sm mb-5">
+  <div class="container-fluid">
+    <div class="row g-2">
 
-      <div class="col-md-3 col-15">
+      <div class="col-md-3 col-sm-12 col-12">
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-building"></i></span>
-          <select class="form-select" [(ngModel)]="selectedFilters.operation" (change)="applyFilters()">
-            <option value="">Type d'opération</option>
-            <option value="maison">Pour Louer</option>
-            <option value="appartement">Pour Acheter</option>
-            
+          <select class="form-select" [(ngModel)]="selectedCategory" (change)="applyFilters()">
+            <option value="">Catégorie</option>
+            <option value="MAISON">Maison</option>
+            <option value="APPARTEMENT">Appartement</option>
+            <option value="TERRAIN">Terrain</option>
           </select>
         </div>
       </div>
-      <!-- Mot-clé -->
-      <div class="col-md-3 col-sm-15 col-15">
+      <div class="col-md-3 col-sm-12 col-12">
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-search"></i></span>
           <input type="text" class="form-control" placeholder="Mot-clé..." [(ngModel)]="keyword" (input)="applyFilters()">
         </div>
       </div>
-      
 
-      <!-- Catégorie (Maison, Appartement, Terrain...) -->
-      <div class="col-md-3 col-sm-15 col-15">
+      <div class="col-md-3 col-12">
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-building"></i></span>
-          <select class="form-select" [(ngModel)]="selectedCategory" (change)="applyFilters()">
-            <option value="">Catégorie</option>
-            <option value="maison">Maison</option>
-            <option value="appartement">Appartement</option>
-            <option value="terrain">Terrain</option>
+          <select class="form-select" [(ngModel)]="typeTransaction" (change)="applyFilters()" >
+            <option value="" >Operation</option>
+            <option value="LOCATION">Pour Louer</option>
+            <option value="VENTE">Pour Acheter</option>
           </select>
         </div>
       </div>
-
-      <!-- Région -->
-      <div class="col-md-3 col-sm-15 col-15">
+      
+      <div class="col-md-3 col-sm-12 col-12">
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-          <select class="form-select" [(ngModel)]="selectedRegion" (change)="applyFilters()">
-            <option value="">Région</option>
-            <option value="tunis">Tunis</option>
-            <option value="sousse">Sousse</option>
-            <option value="nabeul">Nabeul</option>
-            <option value="sfax">Sfax</option>
+          <select class="form-select" [(ngModel)]="selectedGouvernoratId" (change)="onGouvernoratChange()">
+            <option value="" disabled hidden> gouvernorat</option>
+            <option *ngFor="let gov of gouvernorats" [value]="gov.id">{{ gov.nom }}</option>
           </select>
         </div>
       </div>
+      
+      <div class="col-md-3 col-sm-12 col-12" *ngIf="EstSelectGover">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+          <select class="form-select" [(ngModel)]="selectedComId" (change)="applyFilters()">
+            <option value="" disabled hidden> commune</option>
+            <option *ngFor="let commune of communes" [value]="commune.id">{{ commune.nom }}</option>
+          </select>
+        </div>
+      </div>
+      
+      
 
-      <!-- Bouton Filtrage avancé -->
       <div class="col-md-3 col-15 text-center align-items-center">
         <button class="btn btn-outline-secondary" (click)="toggleFilters()">
-          <i class="bi bi-funnel"></i> Filtrage Avencé
+          <i class="bi bi-funnel"></i> Filtrage Avancé
         </button>
       </div>
     </div>
 
-    <!-- Section des filtres avancés -->
     <div class="advanced-filters mt-3 p-3 rounded shadow-sm" [ngClass]="{'show-filters': showAdvancedFilters}">
       <h5>Filtres avancés pour <strong>{{ selectedCategory | titlecase }}</strong></h5>
       <div class="row g-2">
-        <!-- Filtres communs -->
         <div class="col-md-4">
           <h6>Prix max (TND)</h6>
           <input type="range" class="form-range" [(ngModel)]="selectedFilters.prixMax" min="0" max="1000000" step="10000" (change)="applyFilters()">
@@ -72,9 +73,7 @@
           <input type="range" class="form-range" [(ngModel)]="selectedFilters.surfaceMin" min="0" max="1000" step="50" (change)="applyFilters()">
           <span>{{ selectedFilters.surfaceMin }} m²</span>
         </div>
-        
 
-        <!-- Filtres spécifiques à la catégorie -->
         <div *ngIf="selectedCategory === 'maison'" class="row">
           <div class="col-md-4">
             <h6>Nombre de pièces</h6>
@@ -116,48 +115,15 @@
     </div>
   </div>
 </section>
-<app-search-bar></app-search-bar>
-<section class="container-fluid mb-5 pb-md-4 px-3">
-  <div class="d-flex align-items-center justify-content-between mb-4">
-    <h2 class="h3 mb-0">Services</h2>
-    <a class="btn btn-link fw-normal p-0" routerLink="/catalog/rent">
-      View all <i class="fi-arrow-long-right ms-2"></i>
-    </a>
-  </div>
-  <ngx-slick-carousel [config]="service" class="carousel">
-    @for (data of servicesData; track $index) {
-      <div ngxSlickItem>
-        <div class="col">
-          <div class="card card-services card-hover border-0  pb-2 pb-sm-3 px-sm-3 text-center">
-            <img class="d-block mx-auto my-3 " [src]="data.image"  alt="Illustration">
-            <div class="card-body">
-              <h2 class="h4 card-title">{{ data.title }}</h2>
-              <p class="card-text fs-sm">{{ data.content }}</p>
-            </div>
-            <div class="card-footer pt-0 border-0">
-              <a class="btn btn-outline-primary stretched-link" [routerLink]="data.link">{{ data.btn }}</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    }
-  </ngx-slick-carousel>
-</section>
-
-
-
-
-
-<!-- Liste des annonces -->
-<section class="container my-5">
-  <h2 class="text-center mb-4 text-dark">Nos Meilleures Offres</h2>
+<section class="container-fluid my-5" *ngIf="EstAfficher">
+  <h2 class="text-center mb-4 text-dark">Résultat de recherche</h2>
   <div class="row g-4">
     <div class="col-md-6 col-lg-4"*ngFor="let annonce of paginatedAnnonces">
-      <div class="card shadow-lg border-0 rounded-3 h-100" (click)="navigateToDetails(annonce.id)">
+      <div class="card shadow-lg border-0 rounded-3 h-100" (click)="navigateToDetails(annonce.id!)">
         <!-- Badge Disponible/Non disponible -->
         <div class="position-absolute top-0 end-0 m-2">
-          <span class="badge bg-{{ annonce.disponible=='Disponible' ? 'success' : 'danger' }}">
-            {{ annonce.disponible =='Disponible' ? 'Disponible' : 'Non Disponible' }}
+          <span class="badge bg-{{ annonce.disponible==true ? 'success' : 'danger' }}">
+            {{ annonce.disponible ==true ? 'Disponible' : 'Non Disponible' }}
           </span>
         </div>
     
@@ -167,7 +133,7 @@
         </div>
     
         <!-- Image -->
-        <img [src]="annonce.images" class="card-img-top rounded-top" alt="Image du bien" style="height: 200px; object-fit: cover;">
+        <img [src]="annonce.imageUrls?.[0] || 'assets/appart3.jpg'" class="card-img-top rounded-top" alt="Image du bien" style="height: 200px; object-fit: cover;">
     
         <!-- Corps de la carte -->
         <div class="card-body">
@@ -177,7 +143,7 @@
           <!-- Type d'opération -->
           <p class="text-secondary">
             <i class="bi bi-tag"></i>
-            {{ annonce.operation === 'Vente' ? 'À vendre' : 'À louer' }}
+            {{ annonce.typeTransaction }}
           </p>
     
           <!-- Prix -->
@@ -216,3 +182,36 @@
     </nav>
   </div>
 </section>
+<app-search-bar></app-search-bar>
+<section class="container-fluid mb-5 pb-md-4 px-3">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h2 class="h3 mb-0">Services</h2>
+    <a class="btn btn-link fw-normal p-0" routerLink="/catalog/rent">
+      View all <i class="fi-arrow-long-right ms-2"></i>
+    </a>
+  </div>
+  <ngx-slick-carousel [config]="service" class="carousel">
+    @for (data of servicesData; track $index) {
+      <div ngxSlickItem>
+        <div class="col">
+          <div class="card card-services card-hover border-0  pb-2 pb-sm-3 px-sm-3 text-center">
+            <img class="d-block mx-auto my-3 " [src]="data.image"  alt="Illustration">
+            <div class="card-body">
+              <h2 class="h4 card-title">{{ data.title }}</h2>
+              <p class="card-text fs-sm">{{ data.content }}</p>
+            </div>
+            <div class="card-footer pt-0 border-0">
+              <a class="btn btn-outline-primary stretched-link" [routerLink]="data.link">{{ data.btn }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </ngx-slick-carousel>
+</section>
+
+
+
+
+
+<!-- Liste des annonces -->

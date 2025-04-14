@@ -11,10 +11,13 @@
   height: 90px;
   width: 120px;
   margin-bottom: -20px;
-  margin-left: 60px;
+  margin-left: 0px;
   margin-top: -20px;
 }
-
+.user{
+ margin-right: -50px;
+ padding-left: 20px;
+}
 /* Liens du menu */
 .navbar-nav .nav-link {
   font-size: 16px;

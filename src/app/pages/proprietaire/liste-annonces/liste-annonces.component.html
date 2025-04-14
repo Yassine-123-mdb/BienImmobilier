@@ -6,7 +6,7 @@
     <!-- Boucle sur les annonces -->
     <div class="annonce-item" *ngFor="let annonce of annonces">
       <div class="annonce-image">
-        <img [src]="annonce.images[0]" alt="Image de l'annonce" loading="lazy" />
+        <img [src]="annonce.imageUrls?.[0]" alt="Image de l'annonce" loading="lazy" />
       </div>
       <div class="annonce-details">
         <!-- Titre, état et transaction -->
@@ -23,7 +23,7 @@
               {{ annonce.disponible ? 'Disponible' : 'Non disponible' }}
             </span>
             <span class="badge bg-info">
-              {{ annonce.transaction === 'louer' ? 'À louer' : 'À vendre' }}
+              {{ annonce.typeTransaction === 'LOCATION' ? 'À louer' : 'À vendre' }}
             </span>
           </div>
         </div>
@@ -34,35 +34,35 @@
         <div class="annonce-info">
           <div class="info-item">
             <i class="bi bi-geo-alt"></i>
-            <span>{{ annonce.ville }}, {{ annonce.adresse }}</span>
+            <span>{{ annonce.gouvernorat }}, {{ annonce.adresse }}</span>
           </div>
           <div class="info-item">
             <i class="bi bi-house-door"></i>
-            <span>{{ annonce.type }}</span>
+            <span>{{ annonce.categorie }}</span>
           </div>
           <div class="info-item">
             <i class="bi bi-arrows-fullscreen"></i>
             <span>{{ annonce.surface }} m²</span>
           </div>
-          <div class="info-item" *ngIf="annonce.chambres">
+          <div class="info-item" *ngIf="annonce.nombresChambres">
             <i class="bi bi-door-open"></i>
-            <span>{{ annonce.chambres }} chambres</span>
+            <span>{{ annonce.nombresChambres }} chambres</span>
           </div>
-          <div class="info-item" *ngIf="annonce.etages">
+          <div class="info-item" *ngIf="annonce.nombresEtages">
             <i class="bi bi-building"></i>
-            <span>{{ annonce.etages }} étages</span>
+            <span>{{ annonce.nombresEtages }} étages</span>
           </div>
         </div>
 
         <!-- Actions -->
         <div class="annonce-actions">
-          <button class="btn btn-primary" (click)="modifierAnnonce(annonce.id)">
+          <button class="btn btn-primary" (click)="modifierAnnonce(annonce.id!)">
             <i class="bi bi-pencil"></i> Modifier
           </button>
-          <button class="btn btn-danger" (click)="supprimerAnnonce(annonce.id)">
+          <button class="btn btn-danger" (click)="supprimerAnnonce(annonce.id!)">
             <i class="bi bi-trash"></i> Supprimer
           </button>
-          <button class="btn btn-secondary" (click)="voirDetails(annonce.id)">
+          <button class="btn btn-secondary" (click)="voirDetails(annonce.id!)">
             <i class="bi bi-eye"></i> Voir Détails
           </button>
         </div>

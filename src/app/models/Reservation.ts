@@ -1,32 +1,21 @@
-export class Reservation {
-  id?: number; 
-  bienId: number;
-  utilisateurId: number; 
-  titre: string;
-  dateDebut: Date; 
-  adress:string;
-  dateFin: Date; 
-  prixTotal: number; 
-  statut: 'En attente' | 'Confirme' | 'Annule' = 'En attente';
-  commentaire?: string; 
+import { Utilisateur } from "./Utilisateur";
 
-  constructor(
-    bienId: number,
-    titre: string,
-    utilisateurId: number,
-    dateDebut: Date,
-    adress: string,
-    dateFin: Date,
-    prixTotal: number,
-    commentaire?: string
-  ) {
-    this.bienId = bienId;
-    this.utilisateurId = utilisateurId;
-    this.dateDebut = dateDebut;
-    this.adress = adress;
-    this.titre = titre;
-    this.dateFin = dateFin;
-    this.prixTotal = prixTotal;
-    this.commentaire = commentaire;
-  }
+export interface Reservation {
+  id?: number;
+  dateDebut: string;
+  dateFin: string;
+  dateReservation?: string;
+  statut?: 'EN_ATTENTE' | 'CONFIRMEE' | 'ANNULEE' | 'REFUSEE' | 'TERMINEE';
+  confirmeParProprietaire?: boolean;
+  annuleParClient?: boolean;
+  commentaire?: string;
+  client?: Utilisateur;
+  bienId?: number; // utile pour la création
+  bien?: {
+    id: number;
+    titre: string;
+    adresse: string;
+    description: string;
+    prix: number;
+  };
 }

@@ -24,23 +24,30 @@ import { UtilisateursAdminComponent } from './pages/Admin/utilisateurs-admin/uti
 import { PaiementsAdminComponent } from './pages/Admin/paiements-admin/paiements-admin.component';
 import { GestionAnnoncesComponent } from './pages/Admin/gestion-annonces/gestion-annonces.component';
 import { CatalogueComponent } from './pages/catalogue/catalogue.component';
-
+import { RoleGuard } from './services/role.guard';
+import { ForbiddenComponent } from './pages/errors/forbidden/forbidden.component';
+import { ForgotPasswordComponent } from './pages/connexion/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/connexion/reset-password/reset-password.component';
 
 const routes: Routes = [
   { path: 'accueil', component: HomeComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'catalogue', component: CatalogueComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'reservation/:id', component: ReservationComponent },
   { path: 'details-bien/:id', component: DetailsComponent }, // 🔥 Ajout de l'ID pour afficher un bien spécifique
   { path: 'favoris', component: FavorisComponent },
-
+  { path: 'forbidden', component: ForbiddenComponent },
   
   { path: 'list-bien', component:ListeAnnoncesComponent },
 
   {
     path: 'proprietaire',
     component: ProprietaireDashComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'PROPRIETAIRE' },
     children: [
       { path: 'statistiques', component: StatistiquesComponent },
       { path: 'annonces', component: ListeAnnoncesComponent },
@@ -55,9 +62,11 @@ const routes: Routes = [
       { path: '', redirectTo: 'statistiques', pathMatch: 'full' },
     ],
   },
+
   {
     path: 'admin',
     component: DashAdminComponent,
+    
     children: [
       { path: 'statistiques-admin', component: StatistiquesAdminComponent },
       {path : 'utilisateurs', component:UtilisateursAdminComponent},
