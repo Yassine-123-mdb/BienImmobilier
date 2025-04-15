@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user.service';
+import { ImageService } from '../../../services/image-service.service';
 
 @Component({
   selector: 'app-utilisateurs-admin',
@@ -17,8 +18,9 @@ export class UtilisateursAdminComponent implements OnInit {
 
   searchQuery: string = '';
   selectedRole: string = '';
+  imagePath: any;
 
-  constructor(public userService: UserService) {} // Changé à public pour l'accès dans le template
+  constructor(public userService: UserService,private imageService: ImageService) {} // Changé à public pour l'accès dans le template
 
   ngOnInit(): void {
     this.loadUsers();
@@ -30,6 +32,22 @@ export class UtilisateursAdminComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.users = response.content;
+          for(const user of this.users) {
+            this.imageService.getUserImage(user.id).subscribe({
+              next: (imageBlob) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  user.imageUrl = reader.result;
+                  console.log(this.imagePath);
+                };
+                reader.readAsDataURL(imageBlob);
+              },
+              error: (err) => {
+                console.error('Erreur lors du chargement de l’image de profil', err);
+              }
+            });
+          
+          }
           console.log(this.users);
           this.filteredUsers = [...this.users];
           this.totalItems = response.totalElements;
@@ -54,6 +72,22 @@ export class UtilisateursAdminComponent implements OnInit {
       .subscribe({
         next: (users) => {
           this.filteredUsers = users;
+          for(const user of this.filteredUsers) {
+            this.imageService.getUserImage(user.id).subscribe({
+              next: (imageBlob) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  user.imageUrl = reader.result;
+                  console.log(this.imagePath);
+                };
+                reader.readAsDataURL(imageBlob);
+              },
+              error: (err) => {
+                console.error('Erreur lors du chargement de l’image de profil', err);
+              }
+            });
+          
+          }
           this.isLoading = false;
         },
         error: () => {
@@ -94,7 +128,7 @@ export class UtilisateursAdminComponent implements OnInit {
   }
 
   getMainRole(roles: string[]): string {
-    if (!roles || roles.length === 0) return 'CLIENT';
+    if (!roles || roles.length === 0) return 'VISITEUR';
     return roles[0];
   }
 

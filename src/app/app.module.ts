@@ -54,9 +54,9 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './Interceptors/auth.interceptor';
 import { ErrorInterceptor } from './Interceptors/erreur.interceptor';
 import { DpDatePickerModule } from 'ng2-date-picker';
-import { ResetPasswordComponent } from './pages/connexion/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './pages/connexion/forgot-password/forgot-password.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +102,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    AppRoutingModule, 
     MatToolbarModule,
     MatButtonModule,
     FormsModule,

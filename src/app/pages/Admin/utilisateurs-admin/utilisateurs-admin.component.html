@@ -1,32 +1,22 @@
 <div class="container mt-4">
   <h2 class="mb-4">Gestion des Utilisateurs</h2>
 
-  <!-- Barre de recherche -->
+  <!-- Filtres -->
   <div class="row mb-4">
     <div class="col-md-6">
       <div class="input-group">
-        <input 
-          type="text" 
-          [(ngModel)]="searchQuery" 
-          class="form-control" 
-          placeholder="Rechercher par nom, prénom ou email..."
-          (keyup.enter)="applyFilters()"
-        >
+        <input type="text" [(ngModel)]="searchQuery" class="form-control" placeholder="Rechercher nom, prénom ou email" (keyup.enter)="applyFilters()">
         <button class="btn btn-outline-secondary" (click)="applyFilters()">
           <i class="bi bi-search"></i>
         </button>
       </div>
     </div>
     <div class="col-md-4">
-      <select 
-        [(ngModel)]="selectedRole" 
-        class="form-select" 
-        (change)="applyFilters()"
-      >
+      <select [(ngModel)]="selectedRole" class="form-select" (change)="applyFilters()">
         <option value="">Tous les rôles</option>
         <option value="ADMIN">Admin</option>
         <option value="PROPRIETAIRE">Propriétaire</option>
-        <option value="CLIENT">Client</option>
+        <option value="VISITEUR">Client</option>
       </select>
     </div>
     <div class="col-md-2">
@@ -36,9 +26,9 @@
     </div>
   </div>
 
-  <!-- Tableau -->
+  <!-- Tableau des utilisateurs -->
   <div class="table-responsive">
-    <table class="table table-hover table-bordered">
+    <table class="table table-bordered table-hover">
       <thead class="table-light">
         <tr>
           <th>Photo</th>
@@ -53,31 +43,22 @@
       <tbody>
         <tr *ngIf="isLoading">
           <td colspan="7" class="text-center py-4">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Chargement...</span>
-            </div>
+            <div class="spinner-border text-primary"></div>
           </td>
         </tr>
-        <tr *ngFor="let user of filteredUsers">
+        <tr *ngFor="let user of users">
           <td>
-            <img 
-              [src]="user.imageUrls?.[0] || 'assets/default-user.png'" 
-              alt="Photo profil" 
-              class="rounded-circle user-avatar"
-    
-            >
+            <img [src]="user.imageUrl" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
           </td>
           <td>{{ user.nom }}</td>
           <td>{{ user.prenom }}</td>
           <td>{{ user.email }}</td>
           <td>
             <span class="badge" [ngClass]="{
-              'bg-danger': getMainRole(user.roles) === 'ADMIN',
-              'bg-warning text-dark': getMainRole(user.roles) === 'PROPRIETAIRE',
-              'bg-success': getMainRole(user.roles) === 'CLIENT'
-            }">
-              {{ getMainRole(user.roles) | lowercase }}
-            </span>
+              'bg-danger': user.role === 'ADMIN',
+              'bg-warning text-dark': user.role === 'PROPRIETAIRE',
+              'bg-success': user.role === 'VISITEUR'
+            }">{{ user.role | lowercase }}</span>
           </td>
           <td>
             <span class="badge" [ngClass]="user.enabled ? 'bg-success' : 'bg-secondary'">
@@ -86,37 +67,22 @@
           </td>
           <td>
             <div class="d-flex gap-2">
-              <button 
-                class="btn btn-sm btn-outline-danger" 
-                (click)="deleteUser(user.id)"
-              >
+              <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(user.id)">
                 <i class="bi bi-trash"></i>
               </button>
-              <button 
-                class="btn btn-sm" 
-                [ngClass]="user.enabled ? 'btn-warning' : 'btn-success'"
-                (click)="toggleStatus(user.id)"
-              >
+              <button class="btn btn-sm" [ngClass]="user.enabled ? 'btn-warning' : 'btn-success'" (click)="toggleStatus(user.id)">
                 <i class="bi" [ngClass]="user.enabled ? 'bi-lock' : 'bi-unlock'"></i>
               </button>
-              <button 
-                *ngIf="getMainRole(user.roles) === 'CLIENT'"
-                class="btn btn-sm btn-info" 
-                (click)="viewReservations(user.id)"
-              >
+              <button *ngIf="user.role === 'VISITEUR'" class="btn btn-sm btn-info" (click)="viewReservations(user.id)">
                 <i class="bi bi-calendar"></i>
               </button>
-              <button 
-                *ngIf="getMainRole(user.roles) === 'PROPRIETAIRE'"
-                class="btn btn-sm btn-secondary" 
-                (click)="viewAnnonces(user.id)"
-              >
+              <button *ngIf="user.role === 'PROPRIETAIRE'" class="btn btn-sm btn-secondary" (click)="viewAnnonces(user.id)">
                 <i class="bi bi-house"></i>
               </button>
             </div>
           </td>
         </tr>
-        <tr *ngIf="!isLoading && filteredUsers.length === 0">
+        <tr *ngIf="!isLoading && users.length === 0">
           <td colspan="7" class="text-center py-4 text-muted">
             Aucun utilisateur trouvé
           </td>

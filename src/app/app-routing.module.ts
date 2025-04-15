@@ -27,7 +27,7 @@ import { CatalogueComponent } from './pages/catalogue/catalogue.component';
 import { RoleGuard } from './services/role.guard';
 import { ForbiddenComponent } from './pages/errors/forbidden/forbidden.component';
 import { ForgotPasswordComponent } from './pages/connexion/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './pages/connexion/reset-password/reset-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 const routes: Routes = [
   { path: 'accueil', component: HomeComponent },
