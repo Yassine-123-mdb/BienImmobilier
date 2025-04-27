@@ -1,5 +1,11 @@
 <div class="ajouter-bien-container">
-  <h2>Ajouter un Bien Immobilier</h2>
+  <div class="ajouter-bien-container">
+    <h2>{{ isEditMode ? 'Modifier un Bien Immobilier' : 'Ajouter un Bien Immobilier' }}</h2>
+    
+    <!-- Bouton de retour -->
+    <button *ngIf="isEditMode" class="btn btn-secondary mb-3" (click)="router.navigate(['/proprietaire/annonces'])">
+      <i class="bi bi-arrow-left"></i> Retour à la liste
+    </button>
   <div class="ajouter-bien-form">
     <!-- Section Type de Transaction -->
     <div class="form-card">
@@ -194,8 +200,11 @@
     </div>
 
     <!-- Bouton de Soumission -->
-    <div class="form-actions">
+    <div *ngIf="!isEditMode" class="form-actions">
       <button type="button" (click)="onSubmit()" class="btn btn-primary"><i class="bi bi-check-circle"></i> Publier l'Annonce</button>
+    </div>
+    <div *ngIf="isEditMode" class="form-actions">
+      <button type="button" (click)="onSubmit()" class="btn btn-primary"><i class="bi bi-check-circle"></i> Modifier l'Annonce</button>
     </div>
   </div>
 </div>

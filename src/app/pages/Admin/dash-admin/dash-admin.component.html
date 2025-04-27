@@ -1,3 +1,4 @@
+<app-navbar></app-navbar>
 <div class="dashboard-container row col-12">
   <!-- Bouton de menu pour les écrans md et sm -->
   <button class="menu-toggle-btn d-xl-none" (click)="toggleSidebar()">
@@ -39,7 +40,12 @@
             <span *ngIf="!isCollapsed">Gestion des Annoncess</span>
           </a>
         </li>
-       
+        <li>
+          <a routerLink="/admin/profile" routerLinkActive="active">
+            <i class="bi bi-person"></i>
+            <span *ngIf="!isCollapsed">Profil</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>

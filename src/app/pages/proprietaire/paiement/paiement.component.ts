@@ -1,34 +1,53 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
+import { StripeService } from '../../../services/stripe.service';
 
 @Component({
   selector: 'app-paiement',
   templateUrl: './paiement.component.html',
-  styleUrls: ['./paiement.component.css'],
+  styleUrls: ['./paiement.component.css']
 })
-export class PaiementComponent {
-  // Mode de paiement sélectionné
+export class PaiementComponent implements OnInit {
+  abonnement: any = null;
   modePaiement: 'carte' | 'virement' = 'carte';
+  processingPayment = false;
+  errorMessage: string | null = null;
 
-  // Objet pour stocker les informations de paiement
-  paiement = {
-    numeroCarte: '',
-    dateExpiration: '',
-    cvv: '',
-  };
+  constructor(
+    private location: Location,
+    private router: Router,
+    private stripeService: StripeService
+  ) {}
 
-  // Choisir un mode de paiement
-  choisirModePaiement(mode: 'carte' | 'virement'): void {
-    this.modePaiement = mode;
+  ngOnInit(): void {
+    const state = this.location.getState() as any;
+    if (state?.abonnement) {
+      this.abonnement = state.abonnement;
+    } else {
+      this.router.navigate(['/abonnement']);
+    }
   }
 
-  // Soumission du formulaire
   onSubmit(): void {
-    if (this.modePaiement === 'carte') {
-      console.log('Paiement par carte :', this.paiement);
-      alert('Paiement par carte effectué avec succès !');
-    } else {
-      console.log('Paiement par virement');
-      alert('Instructions pour le virement envoyées.');
-    }
+    this.processingPayment = true;
+    this.errorMessage = null;
+
+    this.stripeService.initiatePayment(
+      this.abonnement.type,
+      this.abonnement.prix
+    ).subscribe({
+      next: (response: any) => {
+        this.stripeService.redirectToCheckout(response.paymentToken)
+          .catch(err => {
+            this.errorMessage = err.message;
+            this.processingPayment = false;
+          });
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Erreur lors du paiement';
+        this.processingPayment = false;
+      }
+    });
   }
 }

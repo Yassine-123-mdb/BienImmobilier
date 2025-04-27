@@ -1,55 +1,83 @@
 import { Component, OnInit } from '@angular/core';
-import { Abonnement } from '../../../models/abonnements';
 import { Router } from '@angular/router';
-
-
+import { AbonnementService } from '../../../services/abonnement.service';
+import { Abonnement } from '../../../models/abonnements';
 @Component({
   selector: 'app-abonnement',
   templateUrl: './abonnement.component.html',
-  styleUrls: ['./abonnement.component.css'],
+  styleUrls: ['./abonnement.component.css']
 })
 export class AbonnementComponent implements OnInit {
-  constructor(private router : Router ) {
-    
-  }
-  abonnementActuel: Abonnement | null = null; // Simuler un abonnement actuel
-  abonnementsDisponibles: Abonnement[] = [
-    { id: 1, type: 'Gratuit', nbrAnnonceAutorisees: 2, dateExpiration: new Date(), prix: 0 },
-    { id: 2, type: 'Standard', nbrAnnonceAutorisees: 10, dateExpiration: new Date(), prix: 50 },
-    { id: 3, type: 'Premium', nbrAnnonceAutorisees: -1, dateExpiration: new Date(), prix: 100 }, // -1 = illimité
-  ];
+  abonnementActuel: Abonnement | null = null;
+  abonnementSelectionne: Abonnement | null = null;
+  abonnementsDisponibles: Abonnement[] = [];
+
+  constructor(
+    private router: Router,
+    private abonnementService: AbonnementService
+  ) {}
 
   ngOnInit(): void {
-    // Simuler la récupération de l'abonnement actuel
-    this.abonnementActuel = {
-      id: 1,
-      type: 'Standard',
-      nbrAnnonceAutorisees: 10,
-      dateExpiration: new Date('2025-12-31'),
-      prix: 50,
-    };
+    this.loadCurrentSubscription();
+    this.loadAvailableSubscriptions();
   }
 
-  // Choisir un nouvel abonnement
+  loadCurrentSubscription(): void {
+    this.abonnementService.getCurrentAbonnement().subscribe({
+      next: (abonnement) => {
+        this.abonnementActuel = abonnement;
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement de l\'abonnement actuel', err);
+      }
+    });
+  }
+
+  loadAvailableSubscriptions(): void {
+    this.abonnementService.getAvailableAbonnements().subscribe({
+      next: (abonnements) => {
+        this.abonnementsDisponibles = abonnements;
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des abonnements disponibles', err);
+      }
+    });
+  }
+
   choisirAbonnement(abonnement: Abonnement): void {
-    if (abonnement.type === this.abonnementActuel?.type) return; // Ne rien faire si l'abonnement est déjà actif
-    console.log('Abonnement choisi :', abonnement);
-    // Ici, vous pouvez rediriger vers une page de paiement ou mettre à jour l'abonnement
-    alert(`Vous avez choisi l'abonnement ${abonnement.type}`);
-    this.router.navigate(['/proprietaire/paiement']);
+    if (abonnement.type === this.abonnementActuel?.type) return;
+    this.abonnementSelectionne = abonnement;
+    this.scrollToResume();
   }
 
-  // Obtenir l'icône correspondant au type d'abonnement
-  getIconForAbonnement(type: string): string {
-    switch (type) {
-      case 'Gratuit':
-        return 'bi-gift';
-      case 'Standard':
-        return 'bi-star';
-      case 'Premium':
-        return 'bi-award';
-      default:
-        return 'bi-credit-card';
+  private scrollToResume(): void {
+    const resumeSection = document.querySelector('.resume-section');
+    if (resumeSection) {
+      resumeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  }
+
+  goToPayment(): void {
+    if (this.abonnementSelectionne) {
+      this.router.navigate(['proprietaire/paiement'], {
+        state: { abonnement: this.abonnementSelectionne }
+      });
+    }
+  }
+
+  getIconForAbonnement(type: string): string {
+    const icons: Record<string, string> = {
+      'GRATUIT': 'bi-gift-fill',
+      'STANDARD': 'bi-star-fill',
+      'PREMIUM': 'bi-award-fill'
+    };
+    return icons[type] || 'bi-credit-card';
+  }
+
+  getBadgeClass(abonnement: Abonnement): string {
+    if (abonnement.type === this.abonnementActuel?.type) {
+      return 'badge-active';
+    }
+    return abonnement.popular ? 'badge-popular' : '';
   }
 }

@@ -56,8 +56,10 @@ export class LoginComponent {
   // Rediriger l'utilisateur en fonction de son rôle
   redirectBasedOnRole(roles: any[]) {
     const roleTypes = roles.map(role => role.roleType); // ['PROPRIETAIRE', 'VISITEUR']
-  
-    if (roleTypes.includes('PROPRIETAIRE')) {
+    
+    if (roleTypes.includes('ADMIN')) {
+      this.router.navigate(['/admin']);
+    } else if (roleTypes.includes('PROPRIETAIRE')) {
       console.log('ok');
       this.router.navigate(['/proprietaire']);
     } else if (roleTypes.includes('VISITEUR')) {

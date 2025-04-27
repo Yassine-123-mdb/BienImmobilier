@@ -40,7 +40,8 @@ export class BienImmobilier {
   nombresEtages?: number;
   superficie?: number;
   constructible?: boolean;
-  isVerifieAdmin?: boolean;
+  isVerifieAdmin!: number;
+  statutAdmin!: string;
 
   categorie?: Categorie;
   proprietaire?: Utilisateur;

@@ -1,26 +1,22 @@
 /* 🌟 Style général de la barre de recherche */
 .search-bar {
-  background: transparent;
+  background: #ffffff;
   border-radius: 15px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  
-}
-/* Style général de la section */
-.container {
-  padding: 20px;
-  
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  margin-bottom: 30px;
 }
 
+/* Style général de la section */
+.container-fluid {
+  padding: 20px;
+}
 
 /* 🏠 Espacement entre les éléments */
 .search-bar .row {
-  margin-top: 20px;
-  
-  
+  margin-top: 15px;
   flex-wrap: wrap;
-  
-
+  gap: 15px;
 }
 
 /* 🎨 Style des icônes dans les champs */
@@ -28,7 +24,8 @@
   background-color: #00796b;
   color: white;
   border: none;
- 
+  border-radius: 15px 0 0 15px !important;
+  padding: 0 20px;
 }
 
 /* Supprimer la bordure gauche des champs pour fusionner avec l'icône */
@@ -36,233 +33,413 @@
 .input-group .form-select {
   border-left: 0;
   transition: all 0.3s ease-in-out;
-
-  padding: 10px 20px;
-  border-radius: 15px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
+  padding: 12px 20px;
+  border-radius: 0 15px 15px 0 !important;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
   background: #f8f9fa;
-  font-size: 16px;
+  font-size: 15px;
   color: #495057;
   font-family: 'Poppins', sans-serif;
+}
 
-
+.input-group .form-control:focus,
+.input-group .form-select:focus {
+  box-shadow: 0 0 0 0.25rem rgba(0, 121, 107, 0.25);
 }
 
 /* 🎯 Boutons principaux */
 .btn-primary {
- 
-  background: linear-gradient(45deg, #00796b, #004d40);
+  background: linear-gradient(135deg, #00796b, #004d40);
   border: none;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 77, 64, 0.2);
   transition: all 0.3s ease-in-out;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 500;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(45deg, #004d40, #00796b);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #004d40, #00796b);
+  box-shadow: 0 6px 16px rgba(0, 77, 64, 0.3);
+  transform: translateY(-2px);
 }
 
 /* 🎛 Bouton de filtrage avancé */
 .btn-outline-secondary {
   border-color: #00796b;
   color: #00796b;
-  
-  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 500;
 }
 
 .btn-outline-secondary:hover {
   background-color: #00796b;
   color: white;
+  transform: translateY(-2px);
 }
 
-/* 🎭 Animation d'ouverture des filtres avancés */
+/* 🎭 Filtres avancés */
 .advanced-filters {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
   transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-top: 15px;
 }
 
 .advanced-filters.show-filters {
-  max-height: 500px; /* Ajustez selon le contenu */
+  max-height: 500px;
   opacity: 1;
+  padding: 20px;
 }
 
 /* 📝 Style des titres des filtres avancés */
-.advanced-filters h6 {
-  font-size: 16px;
-  font-weight: 500;
-  color: #00796b;
-}
-
-/* 🏗 Ajout d'une légère ombre pour améliorer la visibilité des champs */
-.form-control, .form-select {
-  box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.1);
-  border: 1px solid #000000;
-}
-
-/* 🌟 Effet sur le bouton de filtrage avancé lorsqu'il est actif */
-.btn-outline-secondary.active {
-  background-color: #00796b;
-  color: white;
-}
-
-/* 🚀 Ajout d'une animation pour afficher les filtres avancés */
-.advanced-filters {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
-}
-
-.show-filters {
-  max-height: 500px; /* Ajuster selon le contenu */
-  opacity: 1;
-}
-/* Style du carrousel */
-.carousel {
-  margin: 10px;
-}
-
-
-/* Style des cartes */
-.card-hover {
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  border-radius: 15px;
-  background: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.card-hover:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Style de l'image */
-.card-hover img {
-  transition: transform 0.3s ease-in-out;
-}
-
-.card-hover:hover img {
-  transform: scale(1.1);
-}
-
-/* Style du titre */
-.card-title {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #00796b;
-  margin-bottom: 15px;
-}
-
-/* Style du texte */
-.card-text {
-  font-size: 1rem;
-  color: #555;
+.advanced-filters h5 {
+  color: #004d40;
+  font-weight: 600;
   margin-bottom: 20px;
 }
 
-/* Style du bouton */
-.btn-outline-primary {
-  border-color: #00796b;
+.advanced-filters h6 {
+  font-size: 15px;
+  font-weight: 500;
   color: #00796b;
-  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+  margin-bottom: 12px;
 }
 
-.btn-outline-primary:hover {
-  background-color: #00796b;
+/* Style des range inputs */
+.form-range {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.form-range::-webkit-slider-thumb {
+  background: #00796b;
+}
+
+/* Style des sélecteurs */
+.form-select {
+  cursor: pointer;
+}
+
+/* ==================== */
+/* STYLES DES CARTES */
+/* ==================== */
+
+.property-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* En-tête de carte */
+.card-header {
+  position: relative;
+  padding: 0;
+  border-bottom: none;
+  
+}
+
+/* Conteneur d'image */
+.property-image-container {
+  position: relative;
+  
+  height: 220px;
+}
+
+.property-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.property-card:hover .property-image-container img {
+  transform: scale(1.05);
+}
+
+/* Badge nombre d'images */
+.image-count-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background-color: rgba(0, 0, 0, 0.7);
   color: white;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
 }
 
-/* Style du pied de carte */
+/* Badge statut */
+.badge {
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+/* Icône favoris */
+.bi-heart, .bi-heart-fill {
+  cursor: pointer;
+  z-index: 4;
+  transition: all 0.2s ease;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.bi-heart:hover {
+  transform: scale(1.1);
+  
+}
+
+/* Corps de carte */
+.card-body {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Titre */
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Localisation */
+.text-muted {
+  font-size: 0.85rem;
+  color: #6c757d !important;
+  display: flex;
+  align-items: center;
+}
+
+/* Caractéristiques */
+.property-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #495057;
+}
+
+.feature-item i {
+  margin-right: 6px;
+  color: #00796b;
+  font-size: 0.9rem;
+}
+
+/* Équipements */
+.equipments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.equipments .badge {
+  background-color: #e9f5f4;
+  color: #00796b;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+.equipments .badge i {
+  margin-right: 5px;
+  font-size: 0.8rem;
+}
+
+/* Prix et date */
+.price-container {
+  margin-top: auto;
+}
+
+.text-primary {
+  color: #00796b !important;
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+/* Pied de carte */
 .card-footer {
   background: transparent;
+  padding: 0 20px 20px;
   border-top: none;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .card-hover {
-    margin-bottom: 20px;
-  }
-
-  .card-title {
-    font-size: 1.25rem;
-  }
-
-  .card-text {
-    font-size: 0.9rem;
-  }
+.card-footer .btn {
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  border-radius: 8px;
 }
 
+/* ==================== */
+/* PAGINATION */
+/* ==================== */
 
-/* 🏗 Style des cartes */
-.card {
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  cursor: pointer;
-  margin-left: 10px;
+.pagination {
+  margin-top: 30px;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  border-radius: 15px;
-  background: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.page-item.active .page-link {
+  background-color: #00796b;
+  border-color: #00796b;
 }
 
-.default-swiper {
-  position: relative;
-  padding: 20px 0;
+.page-link {
+  color: #00796b;
+  border-radius: 8px !important;
+  margin: 0 5px;
+  border: 1px solid #dee2e6;
+  padding: 8px 15px;
 }
 
-/* Style de l'image */
-.card-img-hover {
-  position: relative;
+.page-link:hover {
+  color: #004d40;
+}
+
+/* ==================== */
+/* CARROUSEL SERVICES */
+/* ==================== */
+
+.carousel {
+  margin: 30px 0;
+}
+
+.card-services {
+  border-radius: 12px;
   overflow: hidden;
-  border-radius: 15px 15px 0 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+  border: none;
+  margin: 0 10px;
 }
 
-.card-img-hover img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  transition: transform 0.3s ease-in-out;
+.card-services:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 77, 64, 0.15);
 }
 
-.card-hover:hover img {
+.card-services img {
+  height: 80px;
+  object-fit: contain;
+  margin: 20px auto;
+  transition: transform 0.3s ease;
+}
+
+.card-services:hover img {
   transform: scale(1.1);
 }
 
+.card-services .card-title {
+  color: #004d40;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
 
+.card-services .card-text {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
 
+/* ==================== */
+/* RESPONSIVE DESIGN */
+/* ==================== */
 
+@media (max-width: 992px) {
+  .search-bar .col-md-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  .property-image-container {
+    height: 180px;
+  }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-/* 📱 Ajustements pour les petits écrans */
 @media (max-width: 768px) {
   .search-bar {
-    padding: 10px;
+    padding: 15px;
   }
-
+  
+  .search-bar .col-md-3,
+  .search-bar .col-sm-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
   .card-body {
-    padding: 10px;
+    padding: 15px;
   }
+  
+  .property-features {
+    gap: 8px;
+  }
+  
+  .feature-item {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+  
+  .card-title {
+    font-size: 1.1rem;
+  }
+  
+  .text-primary {
+    font-size: 1.1rem;
+  }
+}
 
-  .col-md-3 {
-    margin-bottom: 10px;
+@media (max-width: 576px) {
+  .property-image-container {
+    height: 160px;
+  }
+  
+  .card-footer .btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+  
+  .advanced-filters.show-filters {
+    padding: 15px;
   }
 }

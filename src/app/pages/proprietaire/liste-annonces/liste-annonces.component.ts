@@ -45,8 +45,7 @@ export class ListeAnnoncesComponent implements OnInit {
   }
 
   modifierAnnonce(id: number): void {
-    this.router.navigate(['/modifier-annonce', id]);
-    this.toastr.info('Redirection vers la modification de l\'annonce', 'Information');
+    this.router.navigate(['/proprietaire/gestion-annonce', id]);
   }
 
   supprimerAnnonce(id: number): void {

@@ -23,9 +23,15 @@
           </a>
         </li>
         <li>
-          <a routerLink="/proprietaire/add-bien" routerLinkActive="active">
+          <a routerLink="/proprietaire/gestion-annonce" routerLinkActive="active">
             <i class="bi bi-plus-circle"></i>
             <span *ngIf="!isCollapsed">Ajouter Annonce</span>
+          </a>
+        </li>
+        <li *ngIf="isEditMode">
+          <a routerLink="/proprietaire/gestion-annonce/{{annonceId}}" routerLinkActive="active">
+            <i class="bi bi-pencil"></i>
+            <span *ngIf="!isCollapsed">Modifier Annonce</span>
           </a>
         </li>
         <li>

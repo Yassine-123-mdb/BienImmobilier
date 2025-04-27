@@ -57,7 +57,6 @@ export class AuthService {
         if (typeof payload.roles[0] === 'string') {
           return payload.roles;
         }
-  
         // Cas 2 : [{ roleType: "PROPRIETAIRE" }]
         return payload.roles.map((r: any) => r.roleType);
       }

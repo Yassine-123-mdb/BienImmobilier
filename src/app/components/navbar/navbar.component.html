@@ -35,8 +35,21 @@
         </a>
 
         <!-- Si connecté -->
-        <div *ngIf="currentUser; else loginButton" class="d-flex align-items-center  ms-3">
-          <i class="bi bi-bell fs-4 text-secondary" style="cursor: pointer;"></i>
+        <div *ngIf="currentUser; else loginButton" class="d-flex align-items-center ms-3">
+          <div class="position-relative">
+            <app-notification-bell 
+              [unreadCount]="unreadCount"
+              [isOpen]="isNotificationsOpen"
+              (click)="toggleNotifications()">
+            </app-notification-bell>
+            
+            <app-notifications-list 
+              *ngIf="isNotificationsOpen"
+              [notifications]="notifications"
+              >
+            </app-notifications-list>
+          </div>
+
 
           <!-- Dropdown utilisateur -->
           <div class="dropdown">
@@ -47,7 +60,7 @@
               <span class="ms-2 fw-semibold">{{ currentUser.prenom }} {{ currentUser.nom }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userDropdown">
-              <li><a class="dropdown-item" routerLink="/profil">Mon profil</a></li>
+              <li><a class="dropdown-item" (click)="redirectProfileBasedOnRole()">Mon profil</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item text-danger" (click)="logout()">Se déconnecter</a></li>
             </ul>

@@ -29,7 +29,6 @@ import { InfoPersonnelComponent } from './pages/profile/info-personnel/info-pers
 import { MessangesComponent } from './pages/profile/messanges/messanges.component';
 import { ListeReservationComponent } from './pages/profile/reservation/reservation.component';
 import { ProprietaireDashComponent } from './pages/proprietaire/proprietaire-dash/proprietaire-dash.component';
-import { AddAnnonceComponent } from './pages/proprietaire/add-annonce/add-annonce.component';
 import { ListeAnnoncesComponent } from './pages/proprietaire/liste-annonces/liste-annonces.component';
 import { StatistiquesComponent } from './pages/proprietaire/statistiques/statistiques.component';
 import { Sidebar2Component } from './pages/proprietaire/sidebar2/sidebar2.component';
@@ -57,7 +56,12 @@ import { DpDatePickerModule } from 'ng2-date-picker';
 import { ForgotPasswordComponent } from './pages/connexion/forgot-password/forgot-password.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
-
+import { NotificationsListComponent } from './components/notifications/notifications-list/notifications-list.component';
+import { NotificationBellComponent } from './components/notifications/notification-bell/notification-bell.component';
+import { NotificationTypePipe } from './Pipe/notification-type.pipe';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import{ GestionAnnoncePropComponent } from './pages/proprietaire/Gestion-annonceProp/gestion-annonceProp.component';
+import { ConfirmationPaiementComponent } from './pages/proprietaire/confirmation-paiement/confirmation-paiement.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -79,7 +83,6 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     MessangesComponent,
     ListeReservationComponent,
     ProprietaireDashComponent,
-    AddAnnonceComponent,
     ListeAnnoncesComponent,
     StatistiquesComponent,
     Sidebar2Component,
@@ -98,6 +101,11 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     ForbiddenComponent,
     ResetPasswordComponent,
     ForgotPasswordComponent,
+    NotificationsListComponent,
+    NotificationBellComponent,
+    NotificationTypePipe,
+    GestionAnnoncePropComponent,
+    ConfirmationPaiementComponent
     
     ],
   imports: [
@@ -113,7 +121,8 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     HttpClientModule,
     SlickCarouselModule,
     DpDatePickerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    InfiniteScrollModule
     
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

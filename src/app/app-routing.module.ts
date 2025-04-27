@@ -10,7 +10,6 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { InfoPersonnelComponent } from './pages/profile/info-personnel/info-personnel.component';
 import { MessangesComponent } from './pages/profile/messanges/messanges.component';
 import { ListeReservationComponent } from './pages/profile/reservation/reservation.component';
-import { AddAnnonceComponent } from './pages/proprietaire/add-annonce/add-annonce.component';
 import { ListeAnnoncesComponent } from './pages/proprietaire/liste-annonces/liste-annonces.component';
 import { ProprietaireDashComponent } from './pages/proprietaire/proprietaire-dash/proprietaire-dash.component';
 import { StatistiquesComponent } from './pages/proprietaire/statistiques/statistiques.component';
@@ -28,6 +27,8 @@ import { RoleGuard } from './services/role.guard';
 import { ForbiddenComponent } from './pages/errors/forbidden/forbidden.component';
 import { ForgotPasswordComponent } from './pages/connexion/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { GestionAnnoncePropComponent } from './pages/proprietaire/Gestion-annonceProp/gestion-annonceProp.component';
+import { ConfirmationPaiementComponent } from './pages/proprietaire/confirmation-paiement/confirmation-paiement.component';
 
 const routes: Routes = [
   { path: 'accueil', component: HomeComponent },
@@ -52,9 +53,16 @@ const routes: Routes = [
       { path: 'statistiques', component: StatistiquesComponent },
       { path: 'annonces', component: ListeAnnoncesComponent },
       { path: 'abonnement', component: AbonnementComponent },
-      { path: 'add-bien', component:AddAnnonceComponent },
+      { 
+        path: 'gestion-annonce', 
+        component: GestionAnnoncePropComponent 
+      },
+      { 
+        path: 'gestion-annonce/:id', 
+        component: GestionAnnoncePropComponent 
+      },
       
-
+      { path: 'confirmation-paiement', component: ConfirmationPaiementComponent },
       { path: 'paiement', component: PaiementComponent },
       { path: 'reservations', component: ReservationsComponent },
       { path: 'profile', component: ProfileProprietaireComponent },
@@ -66,11 +74,13 @@ const routes: Routes = [
   {
     path: 'admin',
     component: DashAdminComponent,
-    
+    canActivate: [RoleGuard],
+    data: { role: 'ADMIN' },
     children: [
       { path: 'statistiques-admin', component: StatistiquesAdminComponent },
       {path : 'utilisateurs', component:UtilisateursAdminComponent},
       {path : 'paiements-admin', component:PaiementsAdminComponent},
+      { path: 'profile', component: ProfileProprietaireComponent },
       {path : 'gestion-annonces', component:GestionAnnoncesComponent},
       { path: '', redirectTo: 'statistiques-admin', pathMatch: 'full' },
       // �� Redirection vers info par défaut
@@ -79,6 +89,7 @@ const routes: Routes = [
   // 🌟 Sous-routes pour le profil
   { 
     path: 'profile', component: ProfileComponent, 
+    
     children: [
       { path: 'info', component: InfoPersonnelComponent },
       {path:'message' , component: MessangesComponent},

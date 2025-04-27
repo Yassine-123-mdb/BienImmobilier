@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-proprietaire-dash',
@@ -6,16 +8,32 @@ import { Component } from '@angular/core';
   styleUrls: ['./proprietaire-dash.component.css'],
 })
 export class ProprietaireDashComponent {
-  isCollapsed = false; // Pour gérer le collapse de la sidebar
-  isSidebarVisible = false; // Pour gérer la visibilité de la sidebar sur les écrans md et sm
+  isCollapsed = false;
+  isSidebarVisible = false;
+  isEditMode = false;
+  annonceId: number | null = null;
 
-  // Basculer la sidebar
+  constructor(private router: Router) {
+    // Surveiller les changements de route pour détecter le mode édition
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const url = event.urlAfterRedirects;
+        this.isEditMode = url.includes('gestion-annonce/');
+        
+        if (this.isEditMode) {
+          const parts = url.split('/');
+          this.annonceId = parseInt(parts[parts.length - 1], 10);
+        } else {
+          this.annonceId = null;
+        }
+      });
+  }
+
   toggleSidebar(): void {
     if (window.innerWidth < 1200) {
-      // Sur les écrans md et sm, basculer la visibilité de la sidebar
       this.isSidebarVisible = !this.isSidebarVisible;
     } else {
-      // Sur les écrans xl, basculer le collapse de la sidebar
       this.isCollapsed = !this.isCollapsed;
     }
   }
