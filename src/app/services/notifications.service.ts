@@ -14,7 +14,7 @@ export class NotificationService implements OnDestroy {
   private socket: WebSocket | null = null;
   private notificationSubject = new Subject<NotificationDTO>();
   private connectionStatus = new BehaviorSubject<boolean>(false);
-  private readonly WS_URL = 'ws://localhost:9091/ws';
+  private readonly WS_URL = 'ws://localhost:9091/ws/notifications';
   private readonly API_URL = 'http://localhost:9091/api/notifications';
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;

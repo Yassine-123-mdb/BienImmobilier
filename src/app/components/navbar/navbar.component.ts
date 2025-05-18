@@ -171,7 +171,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     } else if (roleTypes?.includes('PROPRIETAIRE')) {
       this.router.navigate(['/proprietaire/profile']);
     } else if (roleTypes?.includes('VISITEUR')) {
-      this.router.navigate(['/profile/info']);
+      this.router.navigate(['/profile/infoUser']);
     } else {
       alert('Rôle non autorisé');
     }

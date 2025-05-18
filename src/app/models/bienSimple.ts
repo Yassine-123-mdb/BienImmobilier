@@ -6,5 +6,6 @@ export interface BienSimple {
     typeLocation:string;
     adresse: string;
     prix: number;
+    imageUrls?: string[];
   }
   

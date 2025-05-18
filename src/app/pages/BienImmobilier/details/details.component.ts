@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BienImmobilier } from '../../../models/BienImmobilier';
@@ -10,17 +10,20 @@ import { Utilisateur } from '../../../models/Utilisateur';
 import { AuthService } from '../../../services/auth.service';
 import { AvisRequestDTO } from '../../../models/AvisRequestDTO';
 import { Subscription } from 'rxjs';
+import { MessageService } from '../../../services/message.service';
+import { MessageDTO } from '../../../models/MessageDTO';
+
 
 @Component({
   selector: 'app-details',
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
-export class DetailsComponent implements OnInit {
+export class DetailsComponent implements OnInit, OnDestroy {
   bien!: BienImmobilier;
   imagePrincipaleIndex = 0;
   safeMapUrl!: SafeResourceUrl;
-  messages: { sender: string, text: string, time: Date }[] = [];
+  messages: MessageDTO[] = [];
   newMessage: string = "";
   imageUrls: string[] = [];
   imagePath: string = 'assets/default-avatar.png';
@@ -31,6 +34,7 @@ export class DetailsComponent implements OnInit {
   currentUser!: Utilisateur | null;
   showChat: boolean = false;
   private subs = new Subscription();
+  connectionStatus: boolean = false;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -38,7 +42,8 @@ export class DetailsComponent implements OnInit {
     private imageService: ImageService,
     private route: ActivatedRoute,
     private avisService: AvisService,
-    private authService: AuthService
+    private authService: AuthService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -46,11 +51,66 @@ export class DetailsComponent implements OnInit {
     this.loadAnnonceDetails(id);
     this.loadAvis(id);
     this.currentUser = this.authService.getCurrentUser();
-    
+    this.incrementView(id);
+    this.setupWebSocketConnection(id);
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+    this.messageService.disconnect();
+  }
+
+  private setupWebSocketConnection(bienId: number): void {
+    if (!this.currentUser) return;
+
+    // Se connecter au WebSocket
+    this.subs.add(
+      this.messageService.connectWebSocket().subscribe({
+        next: (message: MessageDTO) => {
+          this.handleIncomingMessage(message);
+          this.connectionStatus = true;
+        },
+        error: (err) => {
+          console.error('WebSocket error:', err);
+          this.connectionStatus = false;
+        },
+        complete: () => this.connectionStatus = false
+      })
+    );
+
+    // Charger l'historique des messages
+    this.loadMessageHistory(bienId);
+  }
+
+  private loadMessageHistory(bienId: number): void {
+    if (!this.currentUser || !this.bien?.proprietaire) return;
+
+    this.subs.add(
+      this.messageService.getConversation(this.bien.proprietaire.id, bienId)
+        .subscribe(messages => {
+          this.messages = messages;
+        })
+    );
+  }
+
+  private handleIncomingMessage(message: MessageDTO): void {
+    // Vérifier si le message concerne ce bien et cet utilisateur
+    const isRelevantMessage = 
+      (message.bienId === this.bien?.id) &&
+      ((message.senderId === this.currentUser?.id && message.recipientId === this.bien.proprietaire?.id) ||
+       (message.recipientId === this.currentUser?.id && message.senderId === this.bien.proprietaire?.id));
+
+    if (isRelevantMessage) {
+      this.messages.push(message);
+      
+      // Faire défiler vers le bas pour voir le nouveau message
+      setTimeout(() => {
+        const chatContainer = document.querySelector('.chat-messages');
+        if (chatContainer) {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+      }, 100);
+    }
   }
 
   private loadUserImage(): void {
@@ -78,9 +138,8 @@ export class DetailsComponent implements OnInit {
     this.subs.add(
       this.annonceService.getAnnonceById(id).subscribe({
         next: (bien) => {
-          this.bien = bien; 
+          this.bien = bien;
           this.safeMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-            
             this.generateMapUrl(localisation)
           );
           this.loadImages(bien.id!);
@@ -95,7 +154,7 @@ export class DetailsComponent implements OnInit {
     this.subs.add(
       this.imageService.loadImages(bienId).subscribe({
         next: (images) => {
-          this.imageUrls = images.map(img => 
+          this.imageUrls = images.map(img =>
             this.imageService.getImageUrl(img.idImage!)
           );
           if (this.bien.imageUrls && this.bien.imageUrls.length > 0) {
@@ -119,6 +178,13 @@ export class DetailsComponent implements OnInit {
     );
   }
 
+  incrementView(bienId: number): void {
+    this.annonceService.incrementView(bienId).subscribe({
+      next: () => console.log('Vue incrémentée avec succès'),
+      error: err => console.error('Erreur d’incrémentation de la vue', err)
+    });
+  }
+
   calculateAverageRating(): void {
     if (this.avis.length === 0) {
       this.averageRating = 0;
@@ -128,13 +194,10 @@ export class DetailsComponent implements OnInit {
     this.averageRating = sum / this.avis.length;
   }
 
-  
   generateMapUrl(localisation: string): string {
     const [lat, lng] = localisation.split(',');
     return `https://www.google.com/maps/embed/v1/view?key=AIzaSyAiml2zVwKsXBCeKHAoiK3Js_a3A52_6KA&center=${lat},${lng}&zoom=15`;
-    
   }
-  
 
   get imagePrincipale(): string {
     return this.imageUrls[this.imagePrincipaleIndex] || 'assets/default-image.jpg';
@@ -148,47 +211,59 @@ export class DetailsComponent implements OnInit {
 
   openChat(): void {
     this.showChat = true;
-    // Message de bienvenue
-    if (this.messages.length === 0) {
-      this.messages.push({
-        sender: 'Propriétaire',
-        text: 'Bonjour, comment puis-je vous aider ?',
-        time: new Date()
-      });
+    
+    // Si c'est la première ouverture, charger les messages
+    if (this.messages.length === 0 && this.bien?.proprietaire) {
+      this.loadMessageHistory(this.bien.id!);
     }
+
+    // Faire défiler vers le bas pour voir les derniers messages
+    setTimeout(() => {
+      const chatContainer = document.querySelector('.chat-messages');
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    }, 100);
   }
 
   envoyerMessage(): void {
-    if (this.newMessage.trim()) {
-      this.messages.push({ 
-        sender: "Moi", 
-        text: this.newMessage,
-        time: new Date()
-      });
-      this.newMessage = "";
-      
-      // Réponse automatique après 1 seconde
-      setTimeout(() => {
-        this.messages.push({ 
-          sender: "Propriétaire", 
-          text: "Merci pour votre message, je vous répondrai dès que possible.",
-          time: new Date()
-        });
-      }, 1000);
+    if (!this.newMessage.trim() || !this.currentUser || !this.bien?.proprietaire) {
+      return;
     }
+
+    const message: MessageDTO = {
+      senderId: this.currentUser.id,
+      recipientId: this.bien.proprietaire.id,
+      content: this.newMessage,
+      bienId: this.bien.id,
+      timestamp: new Date(),
+      read: false
+    };
+    console.log('Message envoyé:', message);
+    this.messageService.sendMessage(message);
+    
+    this.newMessage = "";
+
+    // Faire défiler vers le bas pour voir le nouveau message
+    setTimeout(() => {
+      const chatContainer = document.querySelector('.chat-messages');
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    }, 100);
   }
 
   submitAvis(): void {
     if (!this.currentUser || this.newRating === 0 || !this.newComment.trim()) {
       return;
     }
-  
+
     const avisRequest: AvisRequestDTO = {
       note: this.newRating,
       commentaire: this.newComment,
       bienImmobilierId: this.bien.id!
     };
-  
+
     this.subs.add(
       this.avisService.createAvis(avisRequest).subscribe({
         next: (avis) => {
@@ -222,15 +297,14 @@ export class DetailsComponent implements OnInit {
 
   shouldShowAmenities(): boolean {
     return this.bien.categorie?.nom !== 'TERRAIN' && (
-      !!this.bien.climatiseur || 
-      !!this.bien.jardin || 
-      !!this.bien.garage || 
-      !!this.bien.piscine || 
-      !!this.bien.balcon || 
-      !!this.bien.vueSurMer || 
-      !!this.bien.wifi || 
+      !!this.bien.climatiseur ||
+      !!this.bien.jardin ||
+      !!this.bien.garage ||
+      !!this.bien.piscine ||
+      !!this.bien.balcon ||
+      !!this.bien.vueSurMer ||
+      !!this.bien.wifi ||
       !!this.bien.meuble
     );
   }
-  
 }

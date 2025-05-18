@@ -298,9 +298,9 @@
             </button>
           </div>
           <div class="chat-messages">
-            <div *ngFor="let msg of messages" class="message" [class.sent]="msg.sender === 'Moi'">
-              <div class="message-content">{{ msg.text }}</div>
-              <div class="message-time">{{ msg.time | date:'HH:mm' }}</div>
+            <div *ngFor="let msg of messages" class="message" [class.sent]="msg.senderId == currentUser?.id">
+              <div class="message-content">{{ msg.content}}</div>
+              <div class="message-time">{{ msg.timestamp | date:'HH:mm' }}</div>
             </div>
           </div>
           <div class="chat-input">

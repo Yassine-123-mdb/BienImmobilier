@@ -7,7 +7,7 @@ export interface Annonce {
   adresse: string; // Adresse précise
   prix: number; // Prix du bien
   category: 'maison'|'appartement'|'terrain'; // Catégorie (maison, appartement, terrain)
-  disponible: 'Disponible'|'Non Disponible'; // Disponibilité du bien
+  disponible: boolean; // Disponibilité du bien
   operation: 'Vente' | 'Location'; // Type de transaction (Vente ou Location)
   dateAjout: Date; // Date d'ajout de l'annonce
   images: string[]; // Liste des URLs des images

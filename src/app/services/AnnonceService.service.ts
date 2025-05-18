@@ -15,6 +15,10 @@ export class AnnonceService {
   private apiUrlAdmin = 'http://localhost:9091/api/admin/annonces';
   
   constructor(private http: HttpClient,private authService: AuthService) {}
+
+  incrementView(bienId: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/biens/user/${bienId}/view`, {});
+  }
   getAnnoncesAdmin(
     statut: number | null,
     categorie: string | null,

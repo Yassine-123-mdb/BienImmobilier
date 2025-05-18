@@ -1,7 +1,7 @@
 .profile-main {
     flex: 1;
     padding: 20px;
-    background: #a8ebe3;
+    background: #e5fffc;
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -12,12 +12,10 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
   
-  .profile-main h2 {
-   
-    
-        color: #2c3e50;
-        margin-bottom: 20px;
-        font-family: 'Poppins', sans-serif;
+  .profile-main h4 {
+    color: #212121;
+    font-size: 1.8rem;
+    font-weight: 500;
     
       }
   

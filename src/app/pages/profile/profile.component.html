@@ -1,42 +1,51 @@
 <app-navbar></app-navbar>
+<div class="profile-container d-flex flex-column flex-md-row mt-5 min-vh-100">
+  <!-- Sidebar -->
+  <div class="sidebar-wrapper p-3" style="flex: 0 0 280px;">
+    <div class="profile-sidebar text-center rounded shadow-sm p-4">
+      <div class="profile-pic">
+        <img [src]="imagePath" alt="Profile Picture">
+        
+      </div>
 
-<div class="profile-container container-fluid">
-  <div class="row">
-    <!-- Sidebar (À gauche) -->
-    <div class="col-lg-4 col-md-12 sidebar-wrapper">
-      <div class="profile-sidebar">
-        <div class="profile-pic">
-          <img [src]="user.image" alt="Profile Picture">
-          <label for="file-input" class="edit-icon">
-            <i class="bi bi-camera"></i>
-          </label>
-          <input id="file-input" type="file" hidden (change)="onFileSelected($event)">
+      <div class="profile-info mb-3">
+        <h2 class="h5">{{currentUser.prenom}} {{currentUser.nom}}</h2>
+        <p class="profile-role badge bg-success">Visiteur</p>
+        <p class="profile-location text-muted d-flex justify-content-center align-items-center gap-2">
+          <i class="bi bi-geo-alt"></i> {{currentUser.region}}, Tunisie
+        </p>
+      </div>
+
+      <div class="profile-stats d-flex justify-content-around mb-3">
+        <div class="text-center">
+          <span class="fw-bold fs-5 text-success">5</span><br>
+          <small class="text-muted text-uppercase">Réservations</small>
         </div>
-
-        <div class="profile-info">
-          <h2>Yassine Meddeb</h2>
-          <p class="profile-role">Visiteur</p>
-          <p class="profile-location"><i class="bi bi-geo-alt"></i> Tunis, Tunisie</p>
-        </div>
-
-        <div class="profile-stats">
-          <div class="stat-item"><span class="stat-value">5</span><span class="stat-label">Réservations</span></div>
-          <div class="stat-item"><span class="stat-value">3</span><span class="stat-label">Favoris</span></div>
-        </div>
-
-        <div class="profile-actions">
-          <button class="btn btn-action" routerLink="/profile/info"><i class="bi bi-house"></i> Information personnelle</button>
-          <button class="btn btn-action" routerLink="/profile/reservations"><i class="bi bi-heart"></i> Voir mes Réservations</button>
-          <button class="btn btn-action" routerLink="/profile/message"><i class="bi bi-chat"></i> Contacter un agent</button>
+        <div class="text-center">
+          <span class="fw-bold fs-5 text-success">3</span><br>
+          <small class="text-muted text-uppercase">Favoris</small>
         </div>
       </div>
-    </div>
 
-    <!-- Contenu dynamique (À droite) -->
-    <div class="col-lg-8 col-md-12 content-wrapper">
-      <router-outlet></router-outlet>
+      <div class="profile-actions d-flex flex-column gap-2">
+        <button class="btn btn-action" routerLink="/profile/infoUser" routerLinkActive="active">
+          <i class="bi bi-person"></i> Information personnelle
+        </button>
+        <button class="btn btn-action" routerLink="/profile/reservations" routerLinkActive="active">
+          <i class="bi bi-calendar-check"></i> Mes Réservations
+        </button>
+        <button class="btn btn-action" routerLink="/profile/message" routerLinkActive="active">
+          <i class="bi bi-chat"></i> Contacter un agent
+        </button>
+        <button class="btn btn-logout">
+          <i class="bi bi-box-arrow-right"></i> Déconnexion
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<app-footer></app-footer>
+  <!-- Contenu principal -->
+  <div class="content-wrapper flex-fill p-4 bg-light">
+    <router-outlet></router-outlet>
+  </div>
+</div>

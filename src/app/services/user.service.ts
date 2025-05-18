@@ -22,6 +22,15 @@ export class UserService {
   getCurrentUserProfile(): Observable<Utilisateur> {
     return this.http.get<Utilisateur>(`${this.apiUrl}`,{withCredentials: true });
   }
+  getUserProfile(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/profile`, {withCredentials: true });
+  }
+
+  getContactsByRecipeId(recipeId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/contacts`, {
+      params: { recipeId }, withCredentials: true
+    });
+  }
 
   updateProfile(userData: Partial<Utilisateur>): Observable<any> {
     return this.http.put(`${this.apiUrl}/modifier`, userData,{withCredentials: true });

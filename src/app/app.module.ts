@@ -24,7 +24,6 @@ import { RegisterComponent } from './pages/connexion/register/register.component
 import { DetailsComponent } from './pages/BienImmobilier/details/details.component';
 import { FavorisComponent } from './pages/favoris/favoris/favoris.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { SidebarComponent } from './pages/profile/sidebar/sidebar.component';
 import { InfoPersonnelComponent } from './pages/profile/info-personnel/info-personnel.component';
 import { MessangesComponent } from './pages/profile/messanges/messanges.component';
 import { ListeReservationComponent } from './pages/profile/reservation/reservation.component';
@@ -62,6 +61,7 @@ import { NotificationTypePipe } from './Pipe/notification-type.pipe';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import{ GestionAnnoncePropComponent } from './pages/proprietaire/Gestion-annonceProp/gestion-annonceProp.component';
 import { ConfirmationPaiementComponent } from './pages/proprietaire/confirmation-paiement/confirmation-paiement.component';
+import { TruncatePipe } from './Pipe/truncate.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -78,7 +78,7 @@ import { ConfirmationPaiementComponent } from './pages/proprietaire/confirmation
     FavorisComponent,
     ReservationComponent,
     ProfileComponent,
-    SidebarComponent,
+   
     InfoPersonnelComponent,
     MessangesComponent,
     ListeReservationComponent,
@@ -105,7 +105,8 @@ import { ConfirmationPaiementComponent } from './pages/proprietaire/confirmation
     NotificationBellComponent,
     NotificationTypePipe,
     GestionAnnoncePropComponent,
-    ConfirmationPaiementComponent
+    ConfirmationPaiementComponent,
+    TruncatePipe
     
     ],
   imports: [

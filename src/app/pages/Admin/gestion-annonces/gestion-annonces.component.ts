@@ -77,10 +77,6 @@ export class GestionAnnoncesComponent implements OnInit {
     });
   }
 
-  
-       
-     
-
   // Méthodes de filtrage
   appliquerFiltre(): void {
     this.currentPage = 0;

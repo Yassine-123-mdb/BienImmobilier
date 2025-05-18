@@ -1,5 +1,5 @@
 /* Variables */
-:root {
+:host {
   --primary-color: #00796b;
   --primary-light: #e0f2f1;
   --secondary-color: #ffc107;
@@ -349,12 +349,13 @@
 }
 
 .message.sent {
-  margin-left: auto;
+  margin-left: 200px;
 }
 
 .message-content {
   padding: 10px 15px;
   border-radius: 18px;
+  
   display: inline-block;
   background: #e0f2f1;
 }

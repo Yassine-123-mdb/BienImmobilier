@@ -1,6 +1,9 @@
+// login.component.ts
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+declare var window: any;
 
 @Component({
   selector: 'app-login',
@@ -11,8 +14,20 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   showPassword: boolean = false;
+  forgotPasswordForm: FormGroup;
+  forgotPasswordMessage: string = '';
+  forgotPasswordError: string = '';
+  isSubmitting: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.forgotPasswordForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]]
+    });
+  }
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
@@ -27,14 +42,8 @@ export class LoginComponent {
     this.authService.login({ email: this.email, motDePasse: this.password }).subscribe(
       (response) => {
         console.log('Connexion réussie', response);
-
-        // Stocker le JWT dans un cookie HTTP-only sécurisé
         this.setSecureCookie('token', response.token);
-        
-        console.log(response);
         alert('Connexion réussie !');
-
-        // Vérifier le rôle de l'utilisateur et rediriger en conséquence
         this.redirectBasedOnRole(response.roles);
       },
       (error) => {
@@ -44,23 +53,47 @@ export class LoginComponent {
     );
   }
 
-  // Fonction pour définir un cookie HTTP-only sécurisé
+  openForgotPasswordModal() {
+    const modal = new window.bootstrap.Modal(document.getElementById('forgotPasswordModal')!);
+    modal.show();
+    this.forgotPasswordMessage = '';
+    this.forgotPasswordError = '';
+    this.forgotPasswordForm.reset();
+  }
+
+  onForgotPasswordSubmit() {
+    if (this.forgotPasswordForm.invalid) return;
+
+    this.isSubmitting = true;
+    this.forgotPasswordMessage = '';
+    this.forgotPasswordError = '';
+
+    const email = this.forgotPasswordForm.value.email;
+    this.authService.forgotPassword(email).subscribe({
+      next: () => {
+        this.forgotPasswordMessage = 'Un lien de réinitialisation a été envoyé à votre email.';
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        this.forgotPasswordError = "Une erreur s'est produite. Veuillez réessayer.";
+        this.isSubmitting = false;
+        console.error('Erreur lors de la demande de réinitialisation', err);
+      }
+    });
+  }
+
   setSecureCookie(name: string, value: string) {
     const expirationDate = new Date();
-    expirationDate.setMinutes(expirationDate.getMinutes() + 60); // Le cookie expire dans 60 minutes
-
-    // Création du cookie avec les attributs Secure, HttpOnly et SameSite
+    expirationDate.setMinutes(expirationDate.getMinutes() + 60);
     document.cookie = `${name}=${value}; Secure; SameSite=Strict; expires=${expirationDate.toUTCString()}; path=/`;
   }
 
-  // Rediriger l'utilisateur en fonction de son rôle
   redirectBasedOnRole(roles: any[]) {
-    const roleTypes = roles.map(role => role.roleType); // ['PROPRIETAIRE', 'VISITEUR']
+    const roleTypes = roles.map(role => role.roleType);
     
     if (roleTypes.includes('ADMIN')) {
       this.router.navigate(['/admin']);
     } else if (roleTypes.includes('PROPRIETAIRE')) {
-      console.log('ok');
       this.router.navigate(['/proprietaire']);
     } else if (roleTypes.includes('VISITEUR')) {
       this.router.navigate(['/home']);

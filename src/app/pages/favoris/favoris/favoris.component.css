@@ -1,6 +1,10 @@
 /* styles.css ou component.css */
+.container {
+  padding-top: 80px;
+}
 .favoris-list {
   margin-bottom: 200px;
+ 
 }
 
 .card {

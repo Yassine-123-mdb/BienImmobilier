@@ -1,5 +1,5 @@
 .messages-container {
-  height: 100vh;
+  height: 85%;
   
   padding: 20px;
   background: #a8ebe3;
@@ -8,7 +8,7 @@
   
 }
 .contacts-list {
-  background-color: #ffffff;;
+  background-color: #ffffff;
   border-right: 1px solid #ddd;
   overflow-y: auto;
   height: 100%;

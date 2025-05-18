@@ -89,12 +89,13 @@ const routes: Routes = [
   // 🌟 Sous-routes pour le profil
   { 
     path: 'profile', component: ProfileComponent, 
-    
+    canActivate: [RoleGuard],
+    data: { role: 'VISITEUR' },
     children: [
-      { path: 'info', component: InfoPersonnelComponent },
+      { path: 'infoUser', component: ProfileProprietaireComponent },
       {path:'message' , component: MessangesComponent},
       {path:'reservations' , component: ListeReservationComponent},
-      { path: '', redirectTo: 'info', pathMatch: 'full' },
+      { path: '', redirectTo: 'infoUser', pathMatch: 'full' },
       // 🔥 Redirection vers info par défaut
     ] 
   },

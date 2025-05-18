@@ -18,6 +18,18 @@ export class ReservationService {
     const bienId = reservation.bien?.id;
     return this.http.post<Reservation>(`${this.baseUrl}/${bienId}`, reservation, { headers, withCredentials: true });
   }
+  getReservationClient(): Observable<Reservation[]> {
+    return this.http.get<Reservation[]>(`${this.baseUrl}/user/reservation`, { withCredentials: true });
+  }
+  annulerReservation(id: number): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/user/annuler/${id}`, null, { withCredentials: true });
+  }
+  supprimerReservation(idBien: number): Observable<any> {
+    const headers = this.authService.getAuthHeaders(); 
+    return this.http.delete(`${this.baseUrl}/proprietaire/${idBien}`,{ headers, withCredentials: true });
+  }
+  
+  
   getReservationsByProprietaire(): Observable<Reservation[]> {
     const headers = this.authService.getAuthHeaders();
     return this.http.get<Reservation[]>(`${this.baseUrl}/proprietaire`,{ headers, withCredentials: true });

@@ -1,3 +1,5 @@
+import { BienImmobilier } from "./BienImmobilier";
+import { BienSimple } from "./bienSimple";
 import { Utilisateur } from "./Utilisateur";
 
 export interface Reservation {
@@ -11,11 +13,6 @@ export interface Reservation {
   commentaire?: string;
   client?: Utilisateur;
   bienId?: number; // utile pour la création
-  bien?: {
-    id: number;
-    titre: string;
-    adresse: string;
-    description: string;
-    prix: number;
-  };
+  biens?: BienSimple;
+  bien?: BienImmobilier;
 }

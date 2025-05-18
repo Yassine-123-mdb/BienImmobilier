@@ -165,7 +165,7 @@ export class ReservationComponent implements OnInit {
     const reservation: Reservation = {
       dateDebut: d1.toISOString(),
       dateFin: d2.toISOString(),
-      bien: this.bien
+      biens: this.bien
       
     };
 

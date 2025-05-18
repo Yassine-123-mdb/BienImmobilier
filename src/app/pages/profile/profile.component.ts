@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Utilisateur } from '../../models/Utilisateur';
+import { ImageService } from '../../services/image-service.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -8,28 +10,38 @@ import { Utilisateur } from '../../models/Utilisateur';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit{
-  currentUser: Utilisateur | null = null;
-  constructor(private authService: AuthService) {}
+  currentUser: Utilisateur = {} as Utilisateur;
+  imagePath: any;
+  constructor(private userService: UserService,private imageService: ImageService, private authService: AuthService,) {}
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser();
+    this.userService.getCurrentUserProfile().subscribe({
+      next: (data) => {
+        this.currentUser = data;
+        this.loadUserImage();
+      },
+      error: (err) => console.error('Erreur lors du chargement du profil', err)
+    });
   }
-  user = {
-    nom: "John Doe",
-    region: "Tunis",
-    adresse: "Avenue Habib Bourguiba",
-    telephone: "+216 55 123 456",
-    email: "johndoe@example.com",
-    image: "assets/yassine.jpg"
-  };
+  loadUserImage(): void {
+    this.imageService.getUserImage(this.currentUser?.id).subscribe({
+      next: (imageBlob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          this.imagePath = reader.result;
+          console.log(this.imagePath);
+        };
+        reader.readAsDataURL(imageBlob);
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement de l’image de profil', err);
+      }
+    });
+  }
+  logout(): void {
+    this.authService.logoutFromServer();
+    window.location.reload();
+  }
+ 
 
-  onFileSelected(event: any) {
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.user.image = reader.result as string; // 🔥 Mettre à jour l'image
-      };
-    }
-  }
+
 }
